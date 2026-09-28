@@ -10,15 +10,20 @@
 <style>
 :root{
   --indigo:#4F46E5; --indigo-2:#4338CA; --navy:#2E2A8C; --ink:#1F2937; --muted:#6B7280;
-  --line:#E5E7EB; --soft:#F5F5FF; --bg:#FFFFFF; --side:280px;
+  --line:#E5E7EB; --soft:#F5F5FF; --bg:#FFFFFF; --side:280px; --mbar:56px;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg);font-size:18px;line-height:1.6}
 h1,h2,h3,.display{font-family:"Plus Jakarta Sans",Inter,sans-serif;letter-spacing:-.02em;line-height:1.1;margin:0}
 a{color:var(--indigo)}
-/* Navegación lateral */
-nav.side{position:fixed;inset:0 auto 0 0;width:var(--side);border-right:1px solid var(--line);background:#fff;display:flex;flex-direction:column;z-index:10}
+button{font:inherit}
+
+/* Barra de progreso de lectura */
+#progress{position:fixed;top:0;left:0;height:4px;width:0%;background:linear-gradient(90deg,var(--indigo),#818CF8);z-index:60;transition:width .12s linear}
+
+/* Navegación lateral (desktop) / cajón (móvil) */
+nav.side{position:fixed;inset:0 auto 0 0;width:var(--side);border-right:1px solid var(--line);background:#fff;display:flex;flex-direction:column;z-index:41}
 nav.side .brand{padding:22px 24px;font-weight:700;font-size:15px;border-bottom:1px solid var(--line)}
 nav.side ol{list-style:none;margin:0;padding:12px 0;overflow:auto;flex:1}
 nav.side a{display:block;padding:8px 24px;color:var(--muted);text-decoration:none;font-size:14px;border-left:3px solid transparent}
@@ -26,7 +31,22 @@ nav.side a.on,nav.side a:hover{color:var(--indigo);border-left-color:var(--indig
 nav.side .author{padding:16px 24px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
 nav.side .author b{display:block;color:var(--ink);font-size:14px}
 main{margin-left:var(--side)}
-section{padding:96px 8vw;border-bottom:1px solid var(--line);scroll-margin-top:0}
+
+/* Barra móvil + cajón + overlay */
+.mobile-bar{display:none}
+.overlay{display:none}
+@media (max-width:900px){
+  .mobile-bar{display:flex;position:fixed;top:0;left:0;right:0;height:var(--mbar);background:#fff;
+    border-bottom:1px solid var(--line);align-items:center;gap:12px;padding:0 16px;z-index:45}
+  .mobile-bar button{background:none;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-weight:600;color:var(--ink)}
+  main{margin-left:0;padding-top:var(--mbar)}
+  nav.side{top:var(--mbar);width:84vw;max-width:320px;transform:translateX(-105%);transition:transform .25s ease;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+  nav.side.open{transform:translateX(0)}
+  .overlay{display:block;position:fixed;inset:0;top:var(--mbar);background:rgba(17,24,39,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+  .overlay.show{opacity:1;pointer-events:auto}
+}
+
+section{padding:96px 8vw;border-bottom:1px solid var(--line);scroll-margin-top:24px}
 .wrap{max-width:900px;margin:0 auto}
 .eyebrow{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);margin-bottom:28px}
 .big{font-size:clamp(40px,6vw,68px);font-weight:800;color:var(--indigo)}
@@ -43,23 +63,39 @@ section{padding:96px 8vw;border-bottom:1px solid var(--line);scroll-margin-top:0
 .grid3 .frase{font-weight:600;margin-bottom:8px}
 .grid3 p,.grid3 li{font-size:16px;color:#374151}
 .grid3 ul{padding-left:20px;margin:12px 0 0}
+.grid3>div{transition:transform .2s,box-shadow .2s;border-radius:16px;padding:20px}
+.grid3>div:hover{transform:translateY(-4px);box-shadow:0 16px 32px rgba(46,42,140,.1);background:var(--soft)}
 .cover{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center}
 .cover img{width:100%;max-width:320px;justify-self:center;border-radius:24px}
 .meta{font-size:17px;margin:6px 0}
 .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px;counter-reset:f}
-.flow div{background:var(--soft);border-radius:16px;padding:24px;position:relative}
+.flow div{background:var(--soft);border-radius:16px;padding:24px;position:relative;transition:transform .2s}
+.flow div:hover{transform:translateY(-4px)}
 .flow div::before{counter-increment:f;content:counter(f);display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--indigo);color:#fff;font-weight:700;font-size:15px;margin-bottom:12px}
 .flow b{display:block;font-family:"Plus Jakarta Sans";font-size:20px;color:var(--indigo)}
 .flow span{font-size:15px}
-.cast{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
-.cast div{border:1px solid var(--line);border-radius:16px;padding:22px}
-.cast small{color:var(--muted);display:block;font-size:13px;text-transform:uppercase;letter-spacing:.06em}
-.cast b{font-size:20px;font-family:"Plus Jakarta Sans"}
-.persona{display:grid;grid-template-columns:1fr 1.6fr;gap:40px;align-items:center;margin-top:40px}
+
+/* Controles de pestañas (persona / piloto-implementación / condición) 100% CSS, sin JS */
+.tabgroup{display:flex;flex-wrap:wrap;gap:12px}
+.tab-radio{position:absolute;opacity:0;width:1px;height:1px}
+.tab-btn,.cast-card{cursor:pointer;user-select:none;border:1.5px solid var(--line);border-radius:14px;padding:10px 20px;font-weight:600;font-size:15px;transition:.15s;background:#fff;color:var(--ink)}
+.tab-radio:checked+.tab-btn{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+.tab-radio:focus-visible+.tab-btn,.tab-radio:focus-visible+.cast-card{outline:2px solid var(--indigo);outline-offset:3px}
+.tab-panel{display:none;flex-basis:100%;margin-top:8px}
+.hint-click{font-size:13px;color:var(--muted);margin:-4px 0 0}
+.dark .hint-click{color:#C7D2FE}
+
+/* Personajes de la demo */
+.cast-card{flex:1 1 180px;text-align:center;padding:20px 16px;border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.04);color:#fff}
+.cast-card small{display:block;color:#C7D2FE;font-size:13px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.cast-card b{font-size:19px;font-family:"Plus Jakarta Sans"}
+.tab-radio:checked+.cast-card{background:#fff;color:var(--navy)}
+.tab-radio:checked+.cast-card small{color:var(--indigo)}
+.persona{display:grid;grid-template-columns:1fr 1.6fr;gap:40px;align-items:center;margin-top:8px}
 .persona .who{text-align:center}
-.persona .who .av{width:140px;height:140px;border-radius:50%;background:var(--soft);display:grid;place-items:center;margin:0 auto 12px;font-family:"Plus Jakarta Sans";font-size:44px;font-weight:800;color:var(--indigo)}
-.persona .who span{color:var(--indigo);font-size:20px}
-.video{position:relative;padding-top:62.5%;border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgba(46,42,140,.18)}
+.persona .who .av{width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center;margin:0 auto 12px;font-family:"Plus Jakarta Sans";font-size:38px;font-weight:800;color:#fff}
+.persona .who span{color:#C7D2FE;font-size:18px}
+.video{position:relative;padding-top:62.5%;border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.35)}
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 ul.check{padding-left:22px}
 table{width:100%;border-collapse:collapse;margin:20px 0 8px;font-size:16px}
@@ -70,7 +106,23 @@ tr.hi td{background:#EEF2FF;font-weight:700}
 .opt{margin-top:48px}
 .opt h3{font-size:24px;margin-bottom:6px}
 .tag{display:inline-block;background:var(--indigo);color:#fff;border-radius:999px;padding:2px 12px;font-size:13px;font-weight:600;margin-left:8px;vertical-align:middle}
+
+/* Tarjetas de estadística (precio interactivo) */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
+.stat{background:var(--soft);border-radius:16px;padding:20px}
+.stat b{display:block;font-family:"Plus Jakarta Sans";font-size:clamp(22px,2.4vw,30px);color:var(--indigo)}
+.stat span{font-size:14px;color:var(--muted)}
+.card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
+.card-grid>div{background:var(--soft);border-radius:16px;padding:20px}
+.card-grid b{display:block;font-family:"Plus Jakarta Sans";font-size:19px;color:var(--indigo);margin-bottom:4px}
+.card-grid span{font-size:14px;color:var(--muted)}
+
 .callout{background:var(--soft);border-radius:16px;padding:24px 28px;margin-top:40px}
+.cta{display:inline-flex;align-items:center;gap:8px;background:var(--indigo);color:#fff!important;text-decoration:none;font-weight:700;border-radius:999px;padding:14px 26px;margin-top:18px;transition:.15s}
+.cta:hover{background:var(--indigo-2);transform:translateY(-2px)}
+.cta.ghost{background:transparent;color:var(--indigo)!important;border:1.5px solid var(--indigo)}
+.dark .cta.ghost{color:#fff!important;border-color:#fff}
+
 .steps{counter-reset:s;list-style:none;padding:0;margin-top:36px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 .steps li{background:rgba(255,255,255,.1);border-radius:12px;padding:16px 18px 16px 58px;position:relative}
 .steps li::before{counter-increment:s;content:counter(s);position:absolute;left:18px;top:14px;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:700;font-size:14px}
@@ -82,22 +134,52 @@ tr.hi td{background:#EEF2FF;font-weight:700}
 .team a{color:#fff}
 .conf{font-size:15px;color:var(--muted);max-width:720px}
 footer{padding:28px 8vw;color:var(--muted);font-size:13px}
+
+/* Botón flotante */
+.fab{position:fixed;right:20px;bottom:20px;z-index:50;opacity:0;transform:translateY(16px);pointer-events:none;transition:.25s}
+.fab.show{opacity:1;transform:none;pointer-events:auto}
+
+/* Aparición al hacer scroll */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
 @media (max-width:900px){
-  nav.side{display:none} main{margin-left:0}
-  section{padding:64px 16px}
-  .cover,.persona,.grid3,.flow,.cast,.steps,.team{grid-template-columns:1fr}
+  .cover,.persona,.grid3,.flow,.steps,.team,.stats,.card-grid{grid-template-columns:1fr}
   .table-scroll{overflow-x:auto}
 }
 @media print{
-  nav.side{display:none} main{margin-left:0}
+  #progress,.mobile-bar,.overlay,.fab,nav.side,.tabgroup{display:none!important}
+  main{margin-left:0;padding-top:0}
   section{page-break-inside:avoid;padding:48px 40px}
+  .tab-panel{display:block!important}
+  .reveal{opacity:1!important;transform:none!important;transition:none!important}
   .video{display:none}
   .band,.dark{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
+<style>
+#tab-empleado:checked~#panel-empleado{display:block}
+#tab-manager:checked~#panel-manager{display:block}
+#tab-people:checked~#panel-people{display:block}
+#tab-ceo:checked~#panel-ceo{display:block}
+#modo-piloto:checked~#panel-piloto{display:block}
+#modo-full:checked~#panel-full{display:block}
+#cond-base:checked~#cond-panel-base{display:block}
+#cond-extra1:checked~#cond-panel-extra1{display:block}
+#cond-extra2:checked~#cond-panel-extra2{display:block}
+</style>
 </head>
 <body>
-<nav class="side" aria-label="Secciones">
+<div id="progress"></div>
+
+<div class="mobile-bar">
+  <button id="menuBtn" aria-label="Abrir índice" aria-expanded="false">☰ Índice</button>
+  <b style="font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">GoLive</b>
+</div>
+<div class="overlay" id="navOverlay"></div>
+
+<nav class="side" aria-label="Secciones" id="sideNav">
   <div class="brand">Propuesta de colaboración: GoLive</div>
   <ol>
     <li><a href="#portada">Portada</a></li>
@@ -106,7 +188,7 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
     <li><a href="#solucion">La solución</a></li>
     <li><a href="#accion">Del insight a la acción</a></li>
     <li><a href="#demo">Resumen de la demo</a></li>
-<li><a href="#demo-empleado">· Foto de la cultura en tiempo real</a></li><li><a href="#demo-manager">· Equipar a los managers para el cambio</a></li><li><a href="#demo-people">· Alinear a los equipos en el cambio</a></li><li><a href="#demo-ceo">· Mejora de los resultados de negocio</a></li>    <li><a href="#propuesta">Propuesta económica</a></li>
+    <li><a href="#propuesta">Propuesta económica</a></li>
     <li><a href="#pasos">Próximos pasos</a></li>
     <li><a href="#seguridad">Seguridad</a></li>
     <li><a href="#contacto">Contacto</a></li>
@@ -130,7 +212,7 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
   <div class="wrap">
     <div class="eyebrow">Tenemos claro el objetivo</div>
     <h2 class="big">Visibilidad real de tus 132 personas, directamente en Teams</h2>
-    <p class="quote">"Vamos a hacer visible lo que hoy no ves: cómo está realmente cada persona de GoLive, qué comunicaciones llegan de verdad y dónde necesitas actuar, sin salir de Teams."</p>
+    <p class="quote reveal">"Vamos a hacer visible lo que hoy no ves: cómo está realmente cada persona de GoLive, qué comunicaciones llegan de verdad y dónde necesitas actuar, sin salir de Teams."</p>
   </div>
 </section>
 
@@ -140,12 +222,12 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
     <h2 class="big">"Habilidad para escuchar sin depender del email"</h2>
     <p class="lead" style="color:var(--ink);font-size:21px"><b>Tu realidad:</b> Sin programa activo de clima desde 2022, correo saturado que nadie lee y José gestionando People prácticamente solo.</p>
     <p><b>Tu desafío:</b> Recoger feedback continuo, que las comunicaciones lleguen de verdad y tener visibilidad de la salud de GoLive, sin añadir carga manual.</p>
-    <div class="grid3">
+    <div class="grid3 reveal">
       <div><h3>Tiempo</h3><div class="frase">Cuando lo veis ya ha pasado</div><p>La última encuesta fue en 2022: llevas 3 años sin datos</p></div>
       <div><h3>Visibilidad real</h3><div class="frase">No hay certeza de lo que pasa</div><p>El correo está saturado: las comunicaciones internas no llegan ni se leen</p></div>
       <div><h3>Ejecución</h3><div class="frase">Los datos no cambian nada</div><p>Sin plan de acción</p></div>
     </div>
-    <p class="quote">El problema no es la comunicación interna. Es que no sabes si llega.</p>
+    <p class="quote reveal">El problema no es la comunicación interna. Es que no sabes si llega.</p>
   </div>
 </section>
 
@@ -154,7 +236,7 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
     <div class="eyebrow">La solución (1/2)</div>
     <h2 class="big">Esto es cómo no vais a ciegas</h2>
     <p class="lead">Qué está pasando hoy. Dónde. Y por qué.</p>
-    <div class="grid3">
+    <div class="grid3 reveal">
       <div><h3>Tiempo real</h3><div class="frase">"Medición diaria, no trimestral"</div>
         <ul><li>Directamente en Teams (donde ya trabajáis)</li><li>Integrado con SharePoint para autoservicio</li><li>Sin apps nuevas, sin fricción</li></ul></div>
       <div><h3>Predictibilidad</h3><div class="frase">"Identifica riesgo antes del daño"</div>
@@ -162,7 +244,7 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
       <div><h3>Acción</h3><div class="frase">"Convierte datos en decisiones"</div>
         <ul><li>Encuestas ad hoc tras hitos o situaciones concretas</li><li>Segmentación por área, equipo y manager</li><li>Comunicaciones internas que mides y que llegan</li></ul></div>
     </div>
-    <p class="quote">"Escuchamos a tus 132 personas en GoLive directamente en Teams. José tiene visibilidad real de la salud de la empresa sin añadir carga manual."</p>
+    <p class="quote reveal">"Escuchamos a tus 132 personas en GoLive directamente en Teams. José tiene visibilidad real de la salud de la empresa sin añadir carga manual."</p>
   </div>
 </section>
 
@@ -171,7 +253,7 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
     <div class="eyebrow">La solución (2/2)</div>
     <h2 class="big">Del insight a la acción</h2>
     <p class="lead">Cada señal cultural dispara una acción concreta a través de Kincode AI</p>
-    <div class="flow">
+    <div class="flow reveal">
 <div><b>Señal</b><span>El score baja por debajo de la media de la compañía</span></div><div><b>Insight</b><span>Visibilidad de la señal para el equipo de People & Culture</span></div><div><b>Acción</b><span>Propuesta de plan de acción</span></div><div><b>Monitorización</b><span>Una vez aprobado, monitorizamos el plan de acción y los KPIs</span></div>    </div>
   </div>
 </section>
@@ -180,57 +262,55 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
   <div class="wrap">
     <div class="eyebrow">Resumen de la demo</div>
     <h2 class="big">Personajes de la demo</h2>
-    <div class="cast">
-      <div style="border-color:rgba(255,255,255,.3)"><small style="color:#C7D2FE">Empleado</small><b>Miguel</b></div>
-      <div style="border-color:rgba(255,255,255,.3)"><small style="color:#C7D2FE">Manager</small><b>Hugo</b></div>
-      <div style="border-color:rgba(255,255,255,.3)"><small style="color:#C7D2FE">Chief People Officer</small><b>José Lobera</b></div>
-      <div style="border-color:rgba(255,255,255,.3)"><small style="color:#C7D2FE">CEO</small><b>Javier Olcina</b></div>
-    </div>
-  </div>
-</section>
+    <p class="hint-click">Toca un personaje para ver su parte de la demo ↓</p>
 
-<section id="demo-empleado">
-  <div class="wrap">
-    <div class="eyebrow">Cómo capturamos el dato</div>
-    <h2 class="big">Foto de la cultura en tiempo real</h2>
-    <ul class="check"><li>Integración transparente con WhatsApp y Teams</li><li>Sin fricción: respuestas en 1 clic</li><li>Relevancia de los datos: 70-90 % de tasa de respuesta</li></ul>
-    <div class="persona">
-      <div class="who"><div class="av">M</div><span>Empleado</span><br><small>Miguel</small></div>
+    <div class="tabgroup" style="margin-top:24px">
+      <input type="radio" name="persona" id="tab-empleado" class="tab-radio" checked>
+      <label for="tab-empleado" class="cast-card"><small>Empleado</small><b>Miguel</b></label>
+      <input type="radio" name="persona" id="tab-manager" class="tab-radio" >
+      <label for="tab-manager" class="cast-card"><small>Manager</small><b>Hugo</b></label>
+      <input type="radio" name="persona" id="tab-people" class="tab-radio" >
+      <label for="tab-people" class="cast-card"><small>Chief People Officer</small><b>José Lobera</b></label>
+      <input type="radio" name="persona" id="tab-ceo" class="tab-radio" >
+      <label for="tab-ceo" class="cast-card"><small>CEO</small><b>Javier Olcina</b></label>
+
+      <div class="tab-panel" id="panel-empleado">
+        <div class="eyebrow" style="margin-top:40px">Cómo capturamos el dato</div>
+        <h3 class="big" style="font-size:clamp(28px,3.6vw,42px)">Foto de la cultura en tiempo real</h3>
+        <ul class="check"><li>Integración transparente con WhatsApp y Teams</li><li>Sin fricción: respuestas en 1 clic</li><li>Relevancia de los datos: 70-90 % de tasa de respuesta</li></ul>
+        <div class="persona">
+          <div class="who"><div class="av">M</div><span>Empleado</span><br><small>Miguel</small></div>
 <div><div class="video"><iframe src="https://www.loom.com/embed/ca3dac93b0cf48c3a4f57d752d2364cb" title="Demo: Foto de la cultura en tiempo real" loading="lazy" allowfullscreen></iframe></div>
-      <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/ca3dac93b0cf48c3a4f57d752d2364cb" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>    </div>
-  </div>
-</section>
-<section id="demo-manager">
-  <div class="wrap">
-    <div class="eyebrow">Cómo aprovechamos los datos</div>
-    <h2 class="big">Equipar a los managers para el cambio</h2>
-    <ul class="check"><li>Entender el sentimiento del equipo</li><li>Guiar a los miembros del equipo</li><li>Mejorar las habilidades de los managers</li></ul>
-    <div class="persona">
-      <div class="who"><div class="av">H</div><span>Manager</span><br><small>Hugo</small></div>
+          <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/ca3dac93b0cf48c3a4f57d752d2364cb" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
+      </div>
+      <div class="tab-panel" id="panel-manager">
+        <div class="eyebrow" style="margin-top:40px">Cómo aprovechamos los datos</div>
+        <h3 class="big" style="font-size:clamp(28px,3.6vw,42px)">Equipar a los managers para el cambio</h3>
+        <ul class="check"><li>Entender el sentimiento del equipo</li><li>Guiar a los miembros del equipo</li><li>Mejorar las habilidades de los managers</li></ul>
+        <div class="persona">
+          <div class="who"><div class="av">H</div><span>Manager</span><br><small>Hugo</small></div>
 <div><div class="video"><iframe src="https://www.loom.com/embed/871bdfd62fd048f0a953173e510f1790" title="Demo: Equipar a los managers para el cambio" loading="lazy" allowfullscreen></iframe></div>
-      <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/871bdfd62fd048f0a953173e510f1790" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>    </div>
-  </div>
-</section>
-<section id="demo-people">
-  <div class="wrap">
-    <div class="eyebrow">Cómo accionamos los datos</div>
-    <h2 class="big">Alinear a los equipos en el cambio</h2>
-    <ul class="check"><li>KAI: un empleado de IA pendiente del equipo 24/7</li><li>Planes de acción propuestos de forma recurrente</li></ul>
-    <div class="persona">
-      <div class="who"><div class="av">J</div><span>Chief People Officer</span><br><small>José Lobera</small></div>
+          <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/871bdfd62fd048f0a953173e510f1790" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
+      </div>
+      <div class="tab-panel" id="panel-people">
+        <div class="eyebrow" style="margin-top:40px">Cómo accionamos los datos</div>
+        <h3 class="big" style="font-size:clamp(28px,3.6vw,42px)">Alinear a los equipos en el cambio</h3>
+        <ul class="check"><li>KAI: un empleado de IA pendiente del equipo 24/7</li><li>Planes de acción propuestos de forma recurrente</li></ul>
+        <div class="persona">
+          <div class="who"><div class="av">J</div><span>Chief People Officer</span><br><small>José Lobera</small></div>
 <div><div class="video"><iframe src="https://www.loom.com/embed/b16ab8d65d554f58bf2ae93dca09e33a" title="Demo: Alinear a los equipos en el cambio" loading="lazy" allowfullscreen></iframe></div>
-      <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/b16ab8d65d554f58bf2ae93dca09e33a" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>    </div>
-  </div>
-</section>
-<section id="demo-ceo">
-  <div class="wrap">
-    <div class="eyebrow">Los resultados que obtenemos</div>
-    <h2 class="big">Mejora de los resultados de negocio</h2>
-    <ul class="check"><li>Cultura organizativa alineada</li><li>Mejora de la satisfacción y el compromiso</li></ul>
-    <div class="persona">
-      <div class="who"><div class="av">J</div><span>CEO</span><br><small>Javier Olcina</small></div>
+          <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/b16ab8d65d554f58bf2ae93dca09e33a" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
+      </div>
+      <div class="tab-panel" id="panel-ceo">
+        <div class="eyebrow" style="margin-top:40px">Los resultados que obtenemos</div>
+        <h3 class="big" style="font-size:clamp(28px,3.6vw,42px)">Mejora de los resultados de negocio</h3>
+        <ul class="check"><li>Cultura organizativa alineada</li><li>Mejora de la satisfacción y el compromiso</li></ul>
+        <div class="persona">
+          <div class="who"><div class="av">J</div><span>CEO</span><br><small>Javier Olcina</small></div>
 <div><div class="video"><iframe src="https://www.loom.com/embed/75cfbd417c274c2f8b42e19246a60692" title="Demo: Mejora de los resultados de negocio" loading="lazy" allowfullscreen></iframe></div>
-      <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/75cfbd417c274c2f8b42e19246a60692" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>    </div>
+          <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/75cfbd417c274c2f8b42e19246a60692" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -240,41 +320,87 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
     <h2 class="big">GoLive</h2>
     <p class="meta"><b>132 empleados</b> · España · Teams + SharePoint</p>
 
-    <div class="opt">
-      <h3>Opción 1: Piloto</h3>
-      <div class="table-scroll"><table>
-        <tr><th>Alcance</th><td>36-40 empleados (~30 % de la empresa)</td></tr>
-        <tr><th>Duración</th><td>1-2 meses</td></tr>
-        <tr><th>Coste</th><td><b>GRATUITO si se firma contrato anual</b></td></tr>
-        <tr><th>Si no se firma</th><td>5 €/emp/mes</td></tr>
-      </table></div>
+    <div class="tabgroup" style="margin-top:32px">
+      <input type="radio" name="modo" id="modo-piloto" class="tab-radio" checked>
+      <label for="modo-piloto" class="tab-btn">Opción 1 · Piloto</label>
+      <input type="radio" name="modo" id="modo-full" class="tab-radio">
+      <label for="modo-full" class="tab-btn">Opción 2 · Implementación completa</label>
+
+      <div class="tab-panel" id="panel-piloto">
+        <div class="card-grid">
+          <div><b>36-40</b><span>Alcance (~30 % de la empresa)</span></div>
+          <div><b>1-2 meses</b><span>Duración</span></div>
+          <div><b>GRATUITO si se firma contrato anual</b><span>Coste</span></div>
+          <div><b>5 €/emp/mes</b><span>Si no se firma el anual</span></div>
+        </div>
+        <a class="cta" href="mailto:hugo.rodriguez@kincode.ai?subject=Quiero%20empezar%20por%20el%20piloto%20%E2%80%94%20GoLive">Empezar por el piloto →</a>
+      </div>
+
+      <div class="tab-panel" id="panel-full">
+                <div class="opt">
+          <h3>Opción 2: Implementación completa <span class="tag">-28 %</span></h3>
+
+          <div class="tabgroup" style="margin-top:8px">
+            <input type="radio" name="cond" id="cond-base" class="tab-radio" checked>
+            <label for="cond-base" class="tab-btn">Precio final</label>
+            <input type="radio" name="cond" id="cond-extra1" class="tab-radio">
+            <label for="cond-extra1" class="tab-btn">-10% firma anual</label>
+            <input type="radio" name="cond" id="cond-extra2" class="tab-radio">
+            <label for="cond-extra2" class="tab-btn">-20% firma anual + pago anticipado</label>
+
+            <div class="tab-panel" id="cond-panel-base">
+              <div class="stats">
+                <div class="stat"><b>3,60 €</b><span>€/emp/mes</span></div>
+                <div class="stat"><b>475,20 €</b><span>Total mensual</span></div>
+                <div class="stat"><b>6.702 €</b><span>Total año 1</span></div>
+                <div class="stat"><b>-25 %</b><span>Ahorro vs. tarifa normal</span></div>
+              </div>
+            </div>
+            <div class="tab-panel" id="cond-panel-extra1">
+              <div class="stats">
+                <div class="stat"><b>3,24 €</b><span>€/emp/mes</span></div>
+                <div class="stat"><b>427,68 €</b><span>Total mensual</span></div>
+                <div class="stat"><b>6.132 €</b><span>Total año 1</span></div>
+                <div class="stat"><b>-31 %</b><span>Ahorro vs. tarifa normal</span></div>
+              </div>
+            </div>
+            <div class="tab-panel" id="cond-panel-extra2">
+              <div class="stats">
+                <div class="stat"><b>2,88 €</b><span>€/emp/mes</span></div>
+                <div class="stat"><b>380,16 €</b><span>Total mensual</span></div>
+                <div class="stat"><b>5.562 €</b><span>Total año 1</span></div>
+                <div class="stat"><b>-38 %</b><span>Ahorro vs. tarifa normal</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-scroll"><table>
+            <tr><th>Concepto</th><th class="num">Precio normal</th><th class="num">Precio final</th></tr>
+            <tr><td>Integración (pago único)</td><td class="num">1.000 €</td><td class="num">1.000 €</td></tr>
+            <tr><td>Precio/emp/mes</td><td class="num">5 €</td><td class="num"><b>3,60 €</b></td></tr>
+            <tr><td>Total mensual</td><td class="num">660 €</td><td class="num">475,20 €</td></tr>
+            <tr><td>Total año 1</td><td class="num">8.920 €</td><td class="num"><b>6.702 €</b></td></tr>
+            <tr><td>Ahorro frente a la tarifa normal</td><td class="num">—</td><td class="num">-2.218 € (-25 %)</td></tr>
+          </table></div>
+
+          <div class="opt">
+            <h3 style="font-size:19px">Descuentos adicionales, en detalle</h3>
+            <div class="table-scroll"><table>
+              <tr><th>Condición</th><th class="num">€/emp/mes</th><th class="num">Total mensual</th><th class="num">Total año 1</th><th class="num">Ahorro total</th></tr>
+              <tr><td>-10% firma anual</td><td class="num">3,24 €</td><td class="num">427,68 €</td><td class="num">6.132 €</td><td class="num">-2.788 € (-31 %)</td></tr>
+              <tr class="hi"><td>-20% firma anual + pago anticipado</td><td class="num">2,88 €</td><td class="num">380,16 €</td><td class="num">5.562 €</td><td class="num">-3.358 € (-38 %)</td></tr>
+            </table></div>
+          </div>
+        </div>
+
+      </div>
     </div>
 
-    <div class="opt">
-      <h3>Opción 2: Implementación completa <span class="tag">-28 %</span></h3>
-      <div class="table-scroll"><table>
-        <tr><th>Concepto</th><th class="num">Precio normal</th><th class="num">Precio final</th></tr>
-        <tr><td>Integración (pago único)</td><td class="num">1.000 €</td><td class="num">1.000 €</td></tr>
-        <tr><td>Precio/emp/mes</td><td class="num">5 €</td><td class="num"><b>3,60 €</b></td></tr>
-        <tr><td>Total mensual</td><td class="num">660 €</td><td class="num">475,20 €</td></tr>
-        <tr><td>Total año 1</td><td class="num">8.920 €</td><td class="num"><b>6.702 €</b></td></tr>
-        <tr><td>Ahorro frente a la tarifa normal</td><td class="num">—</td><td class="num">-2.218 € (-25 %)</td></tr>
-      </table></div>
-    </div>
-
-    <div class="opt">
-      <h3>Descuentos adicionales</h3>
-      <div class="table-scroll"><table>
-        <tr><th>Condición</th><th class="num">€/emp/mes</th><th class="num">Total mensual</th><th class="num">Total año 1</th><th class="num">Ahorro total</th></tr>
-        <tr><td>-10% firma anual</td><td class="num">3,24 €</td><td class="num">427,68 €</td><td class="num">6.132 €</td><td class="num">-2.788 € (-31 %)</td></tr>
-        <tr class="hi"><td>-20% firma anual + pago anticipado</td><td class="num">2,88 €</td><td class="num">380,16 €</td><td class="num">5.562 €</td><td class="num">-3.358 € (-38 %)</td></tr>
-      </table></div>
-    </div>
-
-    <div class="callout">
+    <div class="callout reveal">
       <b>Ruta sugerida</b>
       <p>Piloto de 36-40 personas (1-2 meses) → managers prueban y validan → rollout completo en enero de 2027 con los 132 empleados.</p>
       <p style="margin-bottom:0">Con la mejor condición: <b>2,88 €/emp/mes</b>, menos de un café por persona al mes.</p>
+      <a class="cta" href="mailto:hugo.rodriguez@kincode.ai?subject=Adelante%20con%20la%20propuesta%20%E2%80%94%20GoLive">Reservar mi plan →</a>
     </div>
   </div>
 </section>
@@ -283,7 +409,8 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
   <div class="wrap">
     <div class="eyebrow">Próximos pasos</div>
     <h2 class="big">Próximos pasos: 60 días de visibilidad real</h2>
-    <ol class="steps"><li>Piloto con un grupo reducido</li><li>Legal (GDPR y contrato)</li><li>Ciberseguridad</li><li>Sesión de alineamiento cultural</li><li>Instalación del agente en Teams y WhatsApp</li><li>Integración con el HRIS (Bizneo)</li></ol>
+    <ol class="steps reveal"><li>Piloto con un grupo reducido</li><li>Legal (GDPR y contrato)</li><li>Ciberseguridad</li><li>Sesión de alineamiento cultural</li><li>Instalación del agente en Teams y WhatsApp</li><li>Integración con el HRIS (Bizneo)</li></ol>
+    <a class="cta ghost" href="mailto:hugo.rodriguez@kincode.ai?subject=Siguiente%20paso%20%E2%80%94%20GoLive">Agendar el siguiente paso →</a>
   </div>
 </section>
 
@@ -303,14 +430,14 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
 <section class="band">
   <div class="wrap">
     <h2 class="big" style="font-size:clamp(32px,4.4vw,52px)">No estás solo en la transformación</h2>
-    <div class="logos"><span>Danone</span><span>Qaracter</span><span>Taxdown</span><span>PropHero</span><span>Inversimply</span><span>Namencis Education</span></div>
+    <div class="logos reveal"><span>Danone</span><span>Qaracter</span><span>Taxdown</span><span>PropHero</span><span>Inversimply</span><span>Namencis Education</span></div>
   </div>
 </section>
 
 <section id="contacto" class="dark">
   <div class="wrap">
     <div class="eyebrow">Contacto</div>
-    <div class="team">
+    <div class="team reveal">
       <div><h3>Miguel Álvarez</h3>
         <p>📞 (+34) 677 970 653</p>
         <p>📧 <a href="mailto:miguel@kincode.ai">miguel@kincode.ai</a></p>
@@ -332,11 +459,46 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
 <footer>© 2026 Kincode. Todos los derechos reservados.</footer>
 </main>
 
+<a class="fab cta" id="fab" href="mailto:hugo.rodriguez@kincode.ai?subject=Hablemos%20de%20la%20propuesta%20%E2%80%94%20GoLive">💬 Hablar con Hugo</a>
+
 <script>
 // Resalta la sección visible en la navegación lateral
 const links=[...document.querySelectorAll('nav.side a')];
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-40% 0px -55% 0px'});
 document.querySelectorAll('section[id]').forEach(s=>io.observe(s));
+
+// Barra de progreso de lectura
+const bar=document.getElementById('progress');
+addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  const pct=(h.scrollTop)/((h.scrollHeight)-h.clientHeight||1)*100;
+  bar.style.width=pct+'%';
+},{passive:true});
+
+// Cajón de navegación en móvil
+const nav=document.getElementById('sideNav'), overlay=document.getElementById('navOverlay'), menuBtn=document.getElementById('menuBtn');
+function setNav(open){
+  nav.classList.toggle('open',open); overlay.classList.toggle('show',open);
+  menuBtn && menuBtn.setAttribute('aria-expanded',open);
+}
+menuBtn && menuBtn.addEventListener('click',()=>setNav(!nav.classList.contains('open')));
+overlay.addEventListener('click',()=>setNav(false));
+links.forEach(l=>l.addEventListener('click',()=>setNav(false)));
+
+// Aparición suave al hacer scroll
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!reduced && 'IntersectionObserver' in window){
+  const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}}),{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+}else{
+  document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+}
+
+// Botón flotante: aparece al salir de la portada
+const fab=document.getElementById('fab'), hero=document.getElementById('portada');
+if(hero){
+  new IntersectionObserver(es=>es.forEach(e=>fab.classList.toggle('show',!e.isIntersecting)),{rootMargin:'-10% 0px 0px 0px'}).observe(hero);
+}
 </script>
 </body>
 </html>

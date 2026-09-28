@@ -1,3 +1,5 @@
+{% set c = d.cliente %}
+{% set p = d.precios %}
 <!doctype html>
 <html lang="es">
 <head>
@@ -10,15 +12,20 @@
 <style>
 :root{
   --indigo:#4F46E5; --indigo-2:#4338CA; --navy:#2E2A8C; --ink:#1F2937; --muted:#6B7280;
-  --line:#E5E7EB; --soft:#F5F5FF; --bg:#FFFFFF; --side:280px;
+  --line:#E5E7EB; --soft:#F5F5FF; --bg:#FFFFFF; --side:280px; --mbar:56px;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg);font-size:18px;line-height:1.6}
 h1,h2,h3,.display{font-family:"Plus Jakarta Sans",Inter,sans-serif;letter-spacing:-.02em;line-height:1.1;margin:0}
 a{color:var(--indigo)}
-/* Navegación lateral */
-nav.side{position:fixed;inset:0 auto 0 0;width:var(--side);border-right:1px solid var(--line);background:#fff;display:flex;flex-direction:column;z-index:10}
+button{font:inherit}
+
+/* Barra de progreso de lectura */
+#progress{position:fixed;top:0;left:0;height:4px;width:0%;background:linear-gradient(90deg,var(--indigo),#818CF8);z-index:60;transition:width .12s linear}
+
+/* Navegación lateral (desktop) / cajón (móvil) */
+nav.side{position:fixed;inset:0 auto 0 0;width:var(--side);border-right:1px solid var(--line);background:#fff;display:flex;flex-direction:column;z-index:41}
 nav.side .brand{padding:22px 24px;font-weight:700;font-size:15px;border-bottom:1px solid var(--line)}
 nav.side ol{list-style:none;margin:0;padding:12px 0;overflow:auto;flex:1}
 nav.side a{display:block;padding:8px 24px;color:var(--muted);text-decoration:none;font-size:14px;border-left:3px solid transparent}
@@ -26,7 +33,22 @@ nav.side a.on,nav.side a:hover{color:var(--indigo);border-left-color:var(--indig
 nav.side .author{padding:16px 24px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
 nav.side .author b{display:block;color:var(--ink);font-size:14px}
 main{margin-left:var(--side)}
-section{padding:96px 8vw;border-bottom:1px solid var(--line);scroll-margin-top:0}
+
+/* Barra móvil + cajón + overlay */
+.mobile-bar{display:none}
+.overlay{display:none}
+@media (max-width:900px){
+  .mobile-bar{display:flex;position:fixed;top:0;left:0;right:0;height:var(--mbar);background:#fff;
+    border-bottom:1px solid var(--line);align-items:center;gap:12px;padding:0 16px;z-index:45}
+  .mobile-bar button{background:none;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-weight:600;color:var(--ink)}
+  main{margin-left:0;padding-top:var(--mbar)}
+  nav.side{top:var(--mbar);width:84vw;max-width:320px;transform:translateX(-105%);transition:transform .25s ease;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+  nav.side.open{transform:translateX(0)}
+  .overlay{display:block;position:fixed;inset:0;top:var(--mbar);background:rgba(17,24,39,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+  .overlay.show{opacity:1;pointer-events:auto}
+}
+
+section{padding:96px 8vw;border-bottom:1px solid var(--line);scroll-margin-top:24px}
 .wrap{max-width:900px;margin:0 auto}
 .eyebrow{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);margin-bottom:28px}
 .big{font-size:clamp(40px,6vw,68px);font-weight:800;color:var(--indigo)}
@@ -43,23 +65,39 @@ section{padding:96px 8vw;border-bottom:1px solid var(--line);scroll-margin-top:0
 .grid3 .frase{font-weight:600;margin-bottom:8px}
 .grid3 p,.grid3 li{font-size:16px;color:#374151}
 .grid3 ul{padding-left:20px;margin:12px 0 0}
+.grid3>div{transition:transform .2s,box-shadow .2s;border-radius:16px;padding:20px}
+.grid3>div:hover{transform:translateY(-4px);box-shadow:0 16px 32px rgba(46,42,140,.1);background:var(--soft)}
 .cover{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center}
 .cover img{width:100%;max-width:320px;justify-self:center;border-radius:24px}
 .meta{font-size:17px;margin:6px 0}
 .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px;counter-reset:f}
-.flow div{background:var(--soft);border-radius:16px;padding:24px;position:relative}
+.flow div{background:var(--soft);border-radius:16px;padding:24px;position:relative;transition:transform .2s}
+.flow div:hover{transform:translateY(-4px)}
 .flow div::before{counter-increment:f;content:counter(f);display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--indigo);color:#fff;font-weight:700;font-size:15px;margin-bottom:12px}
 .flow b{display:block;font-family:"Plus Jakarta Sans";font-size:20px;color:var(--indigo)}
 .flow span{font-size:15px}
-.cast{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
-.cast div{border:1px solid var(--line);border-radius:16px;padding:22px}
-.cast small{color:var(--muted);display:block;font-size:13px;text-transform:uppercase;letter-spacing:.06em}
-.cast b{font-size:20px;font-family:"Plus Jakarta Sans"}
-.persona{display:grid;grid-template-columns:1fr 1.6fr;gap:40px;align-items:center;margin-top:40px}
+
+/* Controles de pestañas (persona / piloto-implementación / condición) 100% CSS, sin JS */
+.tabgroup{display:flex;flex-wrap:wrap;gap:12px}
+.tab-radio{position:absolute;opacity:0;width:1px;height:1px}
+.tab-btn,.cast-card{cursor:pointer;user-select:none;border:1.5px solid var(--line);border-radius:14px;padding:10px 20px;font-weight:600;font-size:15px;transition:.15s;background:#fff;color:var(--ink)}
+.tab-radio:checked+.tab-btn{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+.tab-radio:focus-visible+.tab-btn,.tab-radio:focus-visible+.cast-card{outline:2px solid var(--indigo);outline-offset:3px}
+.tab-panel{display:none;flex-basis:100%;margin-top:8px}
+.hint-click{font-size:13px;color:var(--muted);margin:-4px 0 0}
+.dark .hint-click{color:#C7D2FE}
+
+/* Personajes de la demo */
+.cast-card{flex:1 1 180px;text-align:center;padding:20px 16px;border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.04);color:#fff}
+.cast-card small{display:block;color:#C7D2FE;font-size:13px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.cast-card b{font-size:19px;font-family:"Plus Jakarta Sans"}
+.tab-radio:checked+.cast-card{background:#fff;color:var(--navy)}
+.tab-radio:checked+.cast-card small{color:var(--indigo)}
+.persona{display:grid;grid-template-columns:1fr 1.6fr;gap:40px;align-items:center;margin-top:8px}
 .persona .who{text-align:center}
-.persona .who .av{width:140px;height:140px;border-radius:50%;background:var(--soft);display:grid;place-items:center;margin:0 auto 12px;font-family:"Plus Jakarta Sans";font-size:44px;font-weight:800;color:var(--indigo)}
-.persona .who span{color:var(--indigo);font-size:20px}
-.video{position:relative;padding-top:62.5%;border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgba(46,42,140,.18)}
+.persona .who .av{width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center;margin:0 auto 12px;font-family:"Plus Jakarta Sans";font-size:38px;font-weight:800;color:#fff}
+.persona .who span{color:#C7D2FE;font-size:18px}
+.video{position:relative;padding-top:62.5%;border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.35)}
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 ul.check{padding-left:22px}
 table{width:100%;border-collapse:collapse;margin:20px 0 8px;font-size:16px}
@@ -70,7 +108,23 @@ tr.hi td{background:#EEF2FF;font-weight:700}
 .opt{margin-top:48px}
 .opt h3{font-size:24px;margin-bottom:6px}
 .tag{display:inline-block;background:var(--indigo);color:#fff;border-radius:999px;padding:2px 12px;font-size:13px;font-weight:600;margin-left:8px;vertical-align:middle}
+
+/* Tarjetas de estadística (precio interactivo) */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
+.stat{background:var(--soft);border-radius:16px;padding:20px}
+.stat b{display:block;font-family:"Plus Jakarta Sans";font-size:clamp(22px,2.4vw,30px);color:var(--indigo)}
+.stat span{font-size:14px;color:var(--muted)}
+.card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
+.card-grid>div{background:var(--soft);border-radius:16px;padding:20px}
+.card-grid b{display:block;font-family:"Plus Jakarta Sans";font-size:19px;color:var(--indigo);margin-bottom:4px}
+.card-grid span{font-size:14px;color:var(--muted)}
+
 .callout{background:var(--soft);border-radius:16px;padding:24px 28px;margin-top:40px}
+.cta{display:inline-flex;align-items:center;gap:8px;background:var(--indigo);color:#fff!important;text-decoration:none;font-weight:700;border-radius:999px;padding:14px 26px;margin-top:18px;transition:.15s}
+.cta:hover{background:var(--indigo-2);transform:translateY(-2px)}
+.cta.ghost{background:transparent;color:var(--indigo)!important;border:1.5px solid var(--indigo)}
+.dark .cta.ghost{color:#fff!important;border-color:#fff}
+
 .steps{counter-reset:s;list-style:none;padding:0;margin-top:36px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 .steps li{background:rgba(255,255,255,.1);border-radius:12px;padding:16px 18px 16px 58px;position:relative}
 .steps li::before{counter-increment:s;content:counter(s);position:absolute;left:18px;top:14px;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:700;font-size:14px}
@@ -82,24 +136,105 @@ tr.hi td{background:#EEF2FF;font-weight:700}
 .team a{color:#fff}
 .conf{font-size:15px;color:var(--muted);max-width:720px}
 footer{padding:28px 8vw;color:var(--muted);font-size:13px}
+
+/* Botón flotante */
+.fab{position:fixed;right:20px;bottom:20px;z-index:50;opacity:0;transform:translateY(16px);pointer-events:none;transition:.25s}
+.fab.show{opacity:1;transform:none;pointer-events:auto}
+
+/* Aparición al hacer scroll */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
 @media (max-width:900px){
-  nav.side{display:none} main{margin-left:0}
-  section{padding:64px 16px}
-  .cover,.persona,.grid3,.flow,.cast,.steps,.team{grid-template-columns:1fr}
+  .cover,.persona,.grid3,.flow,.steps,.team,.stats,.card-grid{grid-template-columns:1fr}
   .table-scroll{overflow-x:auto}
 }
 @media print{
-  nav.side{display:none} main{margin-left:0}
+  #progress,.mobile-bar,.overlay,.fab,nav.side,.tabgroup{display:none!important}
+  main{margin-left:0;padding-top:0}
   section{page-break-inside:avoid;padding:48px 40px}
+  .tab-panel{display:block!important}
+  .reveal{opacity:1!important;transform:none!important;transition:none!important}
   .video{display:none}
   .band,.dark{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
+{# Reglas de mostrar/ocultar para cada grupo de pestañas: 100% CSS, funciona sin JavaScript #}
+<style>
+{% for b in d.demo.bloques %}#tab-{{ b.clave }}:checked~#panel-{{ b.clave }}{display:block}
+{% endfor %}
+#modo-piloto:checked~#panel-piloto{display:block}
+#modo-full:checked~#panel-full{display:block}
+#cond-base:checked~#cond-panel-base{display:block}
+{% for f in p.extras %}#cond-extra{{ loop.index }}:checked~#cond-panel-extra{{ loop.index }}{display:block}
+{% endfor %}
+</style>
 </head>
 <body>
-{% set c = d.cliente %}
-{% set p = d.precios %}
-<nav class="side" aria-label="Secciones">
+{% macro implementacion() %}
+        <div class="opt">
+          <h3>{% if p.mostrar_piloto %}Opción 2: {% endif %}Implementación completa <span class="tag">-{{ p.descuento_pct }} %</span></h3>
+
+          <div class="tabgroup" style="margin-top:8px">
+            <input type="radio" name="cond" id="cond-base" class="tab-radio" checked>
+            <label for="cond-base" class="tab-btn">Precio final</label>
+            {% for f in p.extras %}
+            <input type="radio" name="cond" id="cond-extra{{ loop.index }}" class="tab-radio">
+            <label for="cond-extra{{ loop.index }}" class="tab-btn">{{ f.nombre }}</label>
+            {% endfor %}
+
+            <div class="tab-panel" id="cond-panel-base">
+              <div class="stats">
+                <div class="stat"><b>{{ p.oferta.precio|eur(2) }}</b><span>€/emp/mes</span></div>
+                <div class="stat"><b>{{ p.oferta.mensual|eur(2) }}</b><span>Total mensual</span></div>
+                <div class="stat"><b>{{ p.oferta.anio1|eur }}</b><span>Total año 1</span></div>
+                <div class="stat"><b>-{{ p.oferta.ahorro_pct }} %</b><span>Ahorro vs. tarifa normal</span></div>
+              </div>
+            </div>
+            {% for f in p.extras %}
+            <div class="tab-panel" id="cond-panel-extra{{ loop.index }}">
+              <div class="stats">
+                <div class="stat"><b>{{ f.precio|eur(2) }}</b><span>€/emp/mes</span></div>
+                <div class="stat"><b>{{ f.mensual|eur(2) }}</b><span>Total mensual</span></div>
+                <div class="stat"><b>{{ f.anio1|eur }}</b><span>Total año 1</span></div>
+                <div class="stat"><b>-{{ f.ahorro_pct }} %</b><span>Ahorro vs. tarifa normal</span></div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div class="table-scroll"><table>
+            <tr><th>Concepto</th><th class="num">Precio normal</th><th class="num">Precio final</th></tr>
+            <tr><td>Integración (pago único)</td><td class="num">{{ p.integracion|eur }}</td><td class="num">{{ p.integracion|eur }}</td></tr>
+            <tr><td>Precio/emp/mes</td><td class="num">{{ p.normal.precio|eur }}</td><td class="num"><b>{{ p.oferta.precio|eur(2) }}</b></td></tr>
+            <tr><td>Total mensual</td><td class="num">{{ p.normal.mensual|eur }}</td><td class="num">{{ p.oferta.mensual|eur(2) }}</td></tr>
+            <tr><td>Total año 1</td><td class="num">{{ p.normal.anio1|eur }}</td><td class="num"><b>{{ p.oferta.anio1|eur }}</b></td></tr>
+            <tr><td>Ahorro frente a la tarifa normal</td><td class="num">—</td><td class="num">-{{ p.oferta.ahorro|eur }} (-{{ p.oferta.ahorro_pct }} %)</td></tr>
+          </table></div>
+
+          {% if p.extras %}
+          <div class="opt">
+            <h3 style="font-size:19px">Descuentos adicionales, en detalle</h3>
+            <div class="table-scroll"><table>
+              <tr><th>Condición</th><th class="num">€/emp/mes</th><th class="num">Total mensual</th><th class="num">Total año 1</th><th class="num">Ahorro total</th></tr>
+              {% for f in p.extras %}
+              <tr{% if loop.last %} class="hi"{% endif %}><td>{{ f.nombre }}</td><td class="num">{{ f.precio|eur(2) }}</td><td class="num">{{ f.mensual|eur(2) }}</td><td class="num">{{ f.anio1|eur }}</td><td class="num">-{{ f.ahorro|eur }} (-{{ f.ahorro_pct }} %)</td></tr>
+              {% endfor %}
+            </table></div>
+          </div>
+          {% endif %}
+        </div>
+{% endmacro %}
+<div id="progress"></div>
+
+<div class="mobile-bar">
+  <button id="menuBtn" aria-label="Abrir índice" aria-expanded="false">☰ Índice</button>
+  <b style="font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ c.nombre }}</b>
+</div>
+<div class="overlay" id="navOverlay"></div>
+
+<nav class="side" aria-label="Secciones" id="sideNav">
   <div class="brand">Propuesta de colaboración: {{ c.nombre }}</div>
   <ol>
     <li><a href="#portada">Portada</a></li>
@@ -108,7 +243,6 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
     <li><a href="#solucion">La solución</a></li>
     <li><a href="#accion">Del insight a la acción</a></li>
     <li><a href="#demo">Resumen de la demo</a></li>
-    {% for b in d.demo.bloques %}<li><a href="#demo-{{ b.clave }}">· {{ b.titular }}</a></li>{% endfor %}
     <li><a href="#propuesta">Propuesta económica</a></li>
     <li><a href="#pasos">Próximos pasos</a></li>
     <li><a href="#seguridad">Seguridad</a></li>
@@ -134,7 +268,7 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
   <div class="wrap">
     <div class="eyebrow">Tenemos claro el objetivo</div>
     <h2 class="big">{{ d.objetivo.titular }}</h2>
-    <p class="quote">"{{ d.objetivo.cita }}"</p>
+    <p class="quote reveal">"{{ d.objetivo.cita }}"</p>
   </div>
 </section>
 
@@ -144,12 +278,12 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
     <h2 class="big">"{{ d.oportunidad.titular }}"</h2>
     <p class="lead" style="color:var(--ink);font-size:21px"><b>Tu realidad:</b> {{ d.oportunidad.realidad }}</p>
     <p><b>Tu desafío:</b> {{ d.oportunidad.desafio }}</p>
-    <div class="grid3">
+    <div class="grid3 reveal">
       {% for x in d.oportunidad.pains %}
       <div><h3>{{ x.titulo }}</h3><div class="frase">{{ x.frase }}</div><p>{{ x.detalle }}</p></div>
       {% endfor %}
     </div>
-    <p class="quote">{{ d.oportunidad.insight }}</p>
+    <p class="quote reveal">{{ d.oportunidad.insight }}</p>
   </div>
 </section>
 
@@ -158,13 +292,13 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
     <div class="eyebrow">La solución (1/2)</div>
     <h2 class="big">Esto es cómo no vais a ciegas</h2>
     <p class="lead">Qué está pasando hoy. Dónde. Y por qué.</p>
-    <div class="grid3">
+    <div class="grid3 reveal">
       {% for x in d.solucion.pilares %}
       <div><h3>{{ x.titulo }}</h3><div class="frase">"{{ x.frase }}"</div>
         <ul>{% for i in x.puntos %}<li>{{ i }}</li>{% endfor %}</ul></div>
       {% endfor %}
     </div>
-    <p class="quote">"{{ d.solucion.cita }}"</p>
+    <p class="quote reveal">"{{ d.solucion.cita }}"</p>
   </div>
 </section>
 
@@ -173,7 +307,7 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
     <div class="eyebrow">La solución (2/2)</div>
     <h2 class="big">Del insight a la acción</h2>
     <p class="lead">Cada señal cultural dispara una acción concreta a través de Kincode AI</p>
-    <div class="flow">
+    <div class="flow reveal">
       {% for x in d.del_insight_a_la_accion %}<div><b>{{ x.paso }}</b><span>{{ x.texto }}</span></div>{% endfor %}
     </div>
   </div>
@@ -183,28 +317,29 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
   <div class="wrap">
     <div class="eyebrow">Resumen de la demo</div>
     <h2 class="big">Personajes de la demo</h2>
-    <div class="cast">
+    <p class="hint-click">Toca un personaje para ver su parte de la demo ↓</p>
+
+    <div class="tabgroup" style="margin-top:24px">
       {% for b in d.demo.bloques %}
-      <div style="border-color:rgba(255,255,255,.3)"><small style="color:#C7D2FE">{{ b.rol }}</small><b>{{ d.demo.personajes[b.clave] }}</b></div>
+      <input type="radio" name="persona" id="tab-{{ b.clave }}" class="tab-radio" {% if loop.first %}checked{% endif %}>
+      <label for="tab-{{ b.clave }}" class="cast-card"><small>{{ b.rol }}</small><b>{{ d.demo.personajes[b.clave] }}</b></label>
+      {% endfor %}
+
+      {% for b in d.demo.bloques %}
+      <div class="tab-panel" id="panel-{{ b.clave }}">
+        <div class="eyebrow" style="margin-top:40px">{{ b.etiqueta }}</div>
+        <h3 class="big" style="font-size:clamp(28px,3.6vw,42px)">{{ b.titular }}</h3>
+        <ul class="check">{% for i in b.puntos %}<li>{{ i }}</li>{% endfor %}</ul>
+        <div class="persona">
+          <div class="who"><div class="av">{{ d.demo.personajes[b.clave][:1] }}</div><span>{{ b.rol }}</span><br><small>{{ d.demo.personajes[b.clave] }}</small></div>
+          {% if b.video %}<div><div class="video"><iframe src="{{ b.video }}" title="Demo: {{ b.titular }}" loading="lazy" allowfullscreen></iframe></div>
+          <p style="font-size:15px;margin-top:10px"><a href="{{ b.video|replace('/embed/','/share/') }}" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>{% endif %}
+        </div>
+      </div>
       {% endfor %}
     </div>
   </div>
 </section>
-
-{% for b in d.demo.bloques %}
-<section id="demo-{{ b.clave }}">
-  <div class="wrap">
-    <div class="eyebrow">{{ b.etiqueta }}</div>
-    <h2 class="big">{{ b.titular }}</h2>
-    <ul class="check">{% for i in b.puntos %}<li>{{ i }}</li>{% endfor %}</ul>
-    <div class="persona">
-      <div class="who"><div class="av">{{ d.demo.personajes[b.clave][:1] }}</div><span>{{ b.rol }}</span><br><small>{{ d.demo.personajes[b.clave] }}</small></div>
-      {% if b.video %}<div><div class="video"><iframe src="{{ b.video }}" title="Demo: {{ b.titular }}" loading="lazy" allowfullscreen></iframe></div>
-      <p style="font-size:15px;margin-top:10px"><a href="{{ b.video|replace('/embed/','/share/') }}" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>{% endif %}
-    </div>
-  </div>
-</section>
-{% endfor %}
 
 <section id="propuesta">
   <div class="wrap">
@@ -213,45 +348,35 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
     <p class="meta"><b>{{ p.n }} empleados</b> · {{ c.pais }} · {{ c.stack }}</p>
 
     {% if p.mostrar_piloto %}
-    <div class="opt">
-      <h3>Opción 1: Piloto</h3>
-      <div class="table-scroll"><table>
-        <tr><th>Alcance</th><td>{{ p.piloto.personas }} empleados (~{{ p.piloto.pct }} % de la empresa)</td></tr>
-        <tr><th>Duración</th><td>{{ p.piloto.duracion }}</td></tr>
-        <tr><th>Coste</th><td><b>{{ p.piloto.coste }}</b></td></tr>
-        <tr><th>Si no se firma</th><td>{{ p.piloto.si_no }}</td></tr>
-      </table></div>
+    <div class="tabgroup" style="margin-top:32px">
+      <input type="radio" name="modo" id="modo-piloto" class="tab-radio" checked>
+      <label for="modo-piloto" class="tab-btn">Opción 1 · Piloto</label>
+      <input type="radio" name="modo" id="modo-full" class="tab-radio">
+      <label for="modo-full" class="tab-btn">Opción 2 · Implementación completa</label>
+
+      <div class="tab-panel" id="panel-piloto">
+        <div class="card-grid">
+          <div><b>{{ p.piloto.personas }}</b><span>Alcance (~{{ p.piloto.pct }} % de la empresa)</span></div>
+          <div><b>{{ p.piloto.duracion }}</b><span>Duración</span></div>
+          <div><b>{{ p.piloto.coste }}</b><span>Coste</span></div>
+          <div><b>{{ p.piloto.si_no }}</b><span>Si no se firma el anual</span></div>
+        </div>
+        <a class="cta" href="mailto:{{ d.autor.email }}?subject={{ ('Quiero empezar por el piloto — ' ~ c.nombre) | urlencode }}">Empezar por el piloto →</a>
+      </div>
+
+      <div class="tab-panel" id="panel-full">
+        {{ implementacion() }}
+      </div>
     </div>
+    {% else %}
+    {{ implementacion() }}
     {% endif %}
 
-    <div class="opt">
-      <h3>{% if p.mostrar_piloto %}Opción 2: {% endif %}Implementación completa <span class="tag">-{{ p.descuento_pct }} %</span></h3>
-      <div class="table-scroll"><table>
-        <tr><th>Concepto</th><th class="num">Precio normal</th><th class="num">Precio final</th></tr>
-        <tr><td>Integración (pago único)</td><td class="num">{{ p.integracion|eur }}</td><td class="num">{{ p.integracion|eur }}</td></tr>
-        <tr><td>Precio/emp/mes</td><td class="num">{{ p.normal.precio|eur }}</td><td class="num"><b>{{ p.oferta.precio|eur(2) }}</b></td></tr>
-        <tr><td>Total mensual</td><td class="num">{{ p.normal.mensual|eur }}</td><td class="num">{{ p.oferta.mensual|eur(2) }}</td></tr>
-        <tr><td>Total año 1</td><td class="num">{{ p.normal.anio1|eur }}</td><td class="num"><b>{{ p.oferta.anio1|eur }}</b></td></tr>
-        <tr><td>Ahorro frente a la tarifa normal</td><td class="num">—</td><td class="num">-{{ p.oferta.ahorro|eur }} (-{{ p.oferta.ahorro_pct }} %)</td></tr>
-      </table></div>
-    </div>
-
-    {% if p.extras %}
-    <div class="opt">
-      <h3>Descuentos adicionales</h3>
-      <div class="table-scroll"><table>
-        <tr><th>Condición</th><th class="num">€/emp/mes</th><th class="num">Total mensual</th><th class="num">Total año 1</th><th class="num">Ahorro total</th></tr>
-        {% for f in p.extras %}
-        <tr{% if loop.last %} class="hi"{% endif %}><td>{{ f.nombre }}</td><td class="num">{{ f.precio|eur(2) }}</td><td class="num">{{ f.mensual|eur(2) }}</td><td class="num">{{ f.anio1|eur }}</td><td class="num">-{{ f.ahorro|eur }} (-{{ f.ahorro_pct }} %)</td></tr>
-        {% endfor %}
-      </table></div>
-    </div>
-    {% endif %}
-
-    <div class="callout">
+    <div class="callout reveal">
       <b>Ruta sugerida</b>
       <p>{{ p.ruta }}</p>
       <p style="margin-bottom:0">Con la mejor condición: <b>{{ p.mejor.precio|eur(2) }}/emp/mes</b>, menos de un café por persona al mes.</p>
+      <a class="cta" href="mailto:{{ d.autor.email }}?subject={{ ('Adelante con la propuesta — ' ~ c.nombre) | urlencode }}">Reservar mi plan →</a>
     </div>
   </div>
 </section>
@@ -260,7 +385,8 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
   <div class="wrap">
     <div class="eyebrow">Próximos pasos</div>
     <h2 class="big">{{ d.proximos_pasos.titular }}</h2>
-    <ol class="steps">{% for s in d.proximos_pasos.pasos %}<li>{{ s }}</li>{% endfor %}</ol>
+    <ol class="steps reveal">{% for s in d.proximos_pasos.pasos %}<li>{{ s }}</li>{% endfor %}</ol>
+    <a class="cta ghost" href="mailto:{{ d.autor.email }}?subject={{ ('Siguiente paso — ' ~ c.nombre) | urlencode }}">Agendar el siguiente paso →</a>
   </div>
 </section>
 
@@ -281,14 +407,14 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
 <section class="band">
   <div class="wrap">
     <h2 class="big" style="font-size:clamp(32px,4.4vw,52px)">No estás solo en la transformación</h2>
-    <div class="logos">{% for l in d.clientes_logos %}<span>{{ l }}</span>{% endfor %}</div>
+    <div class="logos reveal">{% for l in d.clientes_logos %}<span>{{ l }}</span>{% endfor %}</div>
   </div>
 </section>
 
 <section id="contacto" class="dark">
   <div class="wrap">
     <div class="eyebrow">Contacto</div>
-    <div class="team">
+    <div class="team reveal">
       {% for m in d.equipo %}
       <div><h3>{{ m.nombre }}</h3>
         <p>📞 {{ m.telefono }}</p>
@@ -308,11 +434,46 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
 <footer>© {{ d.fecha[-4:] }} Kincode. Todos los derechos reservados.</footer>
 </main>
 
+<a class="fab cta" id="fab" href="mailto:{{ d.autor.email }}?subject={{ ('Hablemos de la propuesta — ' ~ c.nombre) | urlencode }}">💬 Hablar con {{ d.autor.nombre.split(' ')[0] }}</a>
+
 <script>
 // Resalta la sección visible en la navegación lateral
 const links=[...document.querySelectorAll('nav.side a')];
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-40% 0px -55% 0px'});
 document.querySelectorAll('section[id]').forEach(s=>io.observe(s));
+
+// Barra de progreso de lectura
+const bar=document.getElementById('progress');
+addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  const pct=(h.scrollTop)/((h.scrollHeight)-h.clientHeight||1)*100;
+  bar.style.width=pct+'%';
+},{passive:true});
+
+// Cajón de navegación en móvil
+const nav=document.getElementById('sideNav'), overlay=document.getElementById('navOverlay'), menuBtn=document.getElementById('menuBtn');
+function setNav(open){
+  nav.classList.toggle('open',open); overlay.classList.toggle('show',open);
+  menuBtn && menuBtn.setAttribute('aria-expanded',open);
+}
+menuBtn && menuBtn.addEventListener('click',()=>setNav(!nav.classList.contains('open')));
+overlay.addEventListener('click',()=>setNav(false));
+links.forEach(l=>l.addEventListener('click',()=>setNav(false)));
+
+// Aparición suave al hacer scroll
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!reduced && 'IntersectionObserver' in window){
+  const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}}),{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+}else{
+  document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+}
+
+// Botón flotante: aparece al salir de la portada
+const fab=document.getElementById('fab'), hero=document.getElementById('portada');
+if(hero){
+  new IntersectionObserver(es=>es.forEach(e=>fab.classList.toggle('show',!e.isIntersecting)),{rootMargin:'-10% 0px 0px 0px'}).observe(hero);
+}
 </script>
 </body>
 </html>
