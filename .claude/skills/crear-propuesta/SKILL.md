@@ -1,6 +1,6 @@
 ---
 name: crear-propuesta
-description: Genera la propuesta web interactiva de Kincode (resumen de la demo + propuesta económica, lo que antes se hacía en Qwilr) a partir de las notas de la discovery y la demo. Úsala cuando el usuario pida una propuesta, un presupuesto, una propuesta económica o el documento post-demo para un cliente.
+description: Genera la propuesta web interactiva de Kincode (resumen de la demo + propuesta económica, lo que antes se hacía en Qwilr) a partir de las notas de la discovery y la demo, y puede publicarla como un Artifact con enlace para compartir. Úsala cuando el usuario pida una propuesta, un presupuesto, una propuesta económica o el documento post-demo para un cliente.
 ---
 
 # Crear propuesta
@@ -49,3 +49,30 @@ los 3 dolores, solución, insight→acción, demo, propuesta económica, próxim
 seguridad, integraciones, clientes, contacto). Si el cliente pide cambiar el diseño
 (colores, orden, más o menos diapositivas), edita `plantilla.html.j2`; no hace falta
 tocar `generar.py` salvo que cambie qué datos se calculan.
+
+## Publicarla como Artifact (enlace para compartir)
+
+Si el usuario quiere un enlace en vez de (o además de) el archivo `propuesta.html`:
+
+1. `python3 herramientas/propuesta/para_artifact.py demos/<carpeta>/propuesta.html`
+   — genera `propuesta.artifact.html`. Este paso adapta el HTML a las reglas del
+   visor de Artifacts (que no son las de un navegador normal):
+   - Cambia los vídeos de Loom (que iban en `<iframe>`) por una tarjeta que
+     enlaza fuera, porque el visor no permite incrustar sitios de terceros.
+   - Convierte el botón "Hablar con ___" y añade un botón "Copiar email" junto
+     a cada CTA, porque los enlaces `mailto:` no son fiables dentro del visor.
+   - Descarga e incrusta como `data:` cualquier imagen externa (el visor
+     bloquea imágenes que no sean propias, de Google Fonts o data:/blob:).
+   - Quita `<!doctype>/<html>/<head>/<body>`: el Artifact ya pone los suyos.
+2. Publica con la herramienta Artifact: `file_path` apuntando a ese
+   `.artifact.html`, un `title` corto (2-4 palabras, sin explicación tras un
+   guion — el propio `<title>` del HTML manda si no coincide, actualízalo ahí),
+   una `description` de una frase e `icon` (p. ej. `presentation`).
+3. Antes de publicar, comprueba con un screenshot local que las tarjetas de
+   vídeo y el botón de copiar funcionan, y que no queda ninguna `<img>` con
+   `src="http..."` sin incrustar (el aviso de la propia herramienta Artifact
+   lo dice si se cuela alguna).
+
+El archivo `propuesta.html` (el original, con iframes y mailtos) sigue siendo
+el que se envía por email o se sube a Drive/HubSpot; el `.artifact.html` es
+solo para cuando el destino es un enlace de Artifact.
