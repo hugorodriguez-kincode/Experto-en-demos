@@ -1,0 +1,57 @@
+# Contenido común a TODAS las propuestas de Kincode. Cada propuesta.yaml puede
+# sobrescribir cualquier clave (se fusiona en profundidad).
+
+del_insight_a_la_accion:
+  - { paso: Señal, texto: "El score baja por debajo de la media de la compañía" }
+  - { paso: Insight, texto: "Visibilidad de la señal para el equipo de People & Culture" }
+  - { paso: Acción, texto: "Propuesta de plan de acción" }
+  - { paso: Monitorización, texto: "Una vez aprobado, monitorizamos el plan de acción y los KPIs" }
+
+demo:
+  bloques:
+    - clave: empleado
+      rol: Empleado
+      etiqueta: Cómo capturamos el dato
+      titular: Foto de la cultura en tiempo real
+      puntos: ["Integración transparente con {canales}", "Sin fricción: respuestas en 1 clic", "Relevancia de los datos: 70-90 % de tasa de respuesta"]
+      video: https://www.loom.com/embed/ca3dac93b0cf48c3a4f57d752d2364cb
+    - clave: manager
+      rol: Manager
+      etiqueta: Cómo aprovechamos los datos
+      titular: Equipar a los managers para el cambio
+      puntos: ["Entender el sentimiento del equipo", "Guiar a los miembros del equipo", "Mejorar las habilidades de los managers"]
+      video: https://www.loom.com/embed/871bdfd62fd048f0a953173e510f1790
+    - clave: people
+      rol: Chief People Officer
+      etiqueta: Cómo accionamos los datos
+      titular: Alinear a los equipos en el cambio
+      puntos: ["KAI: un empleado de IA pendiente del equipo 24/7", "Planes de acción propuestos de forma recurrente"]
+      video: https://www.loom.com/embed/b16ab8d65d554f58bf2ae93dca09e33a
+    - clave: ceo
+      rol: CEO
+      etiqueta: Los resultados que obtenemos
+      titular: Mejora de los resultados de negocio
+      puntos: ["Cultura organizativa alineada", "Mejora de la satisfacción y el compromiso"]
+      video: https://www.loom.com/embed/75cfbd417c274c2f8b42e19246a60692
+  canales: "WhatsApp y Teams"
+
+seguridad:
+  titular: "Nuestro stack tecnológico cumple con el estándar ISO 27001"
+  puntos: ["Auditorías anuales de Kincode por nuestro partner IronWolf Security, según los estándares OWASP"]
+  stack:
+    - { nombre: "Amazon Web Services (AWS)", url: "https://aws.amazon.com/es/security/" }
+    - { nombre: "Heroku (basado en AWS)", url: "https://www.heroku.com/compliance" }
+    - { nombre: "MongoDB (basado en AWS)", url: "https://www.mongodb.com/trust" }
+    - { nombre: "GitHub", url: "https://github.com/security" }
+
+clientes_logos: [Danone, Qaracter, Taxdown, PropHero, Inversimply, Namencis Education]
+
+integraciones:
+  titular: "Conecta todos tus datos y aplicaciones en un mismo lugar"
+  texto: "Ahorra tiempo y esfuerzo conectando Kincode con otras aplicaciones. Seguimos añadiendo más, y si no encuentras tu aplicación, podemos integrarla vía API."
+
+confidencial: >-
+  Este documento contiene propiedad intelectual confidencial, conocimientos técnicos y otra
+  información propiedad de Kincode. El acceso a esta información y su uso están estrictamente
+  limitados y controlados por Kincode. El destinatario no puede copiar, distribuir ni divulgar
+  este documento, incluidos los resúmenes de su contenido, a terceros.

@@ -6,7 +6,11 @@ description: Genera el paquete completo de una demo de producto (brief, guion co
 # Crear demo
 
 1. Lee todo `conocimiento/` (producto, clientes, casos de uso, marca).
-2. Reúne del usuario los datos del brief (`plantillas/brief-demo.md`). Si faltan
+2. Parte de la discovery del cliente (`demos/<carpeta>/discovery.md`). Si el usuario
+   pasa una transcripción o notas sueltas, rellena primero `plantillas/discovery.md`.
+   La demo de Kincode se cuenta por personajes (Empleado → Manager → People → CEO):
+   asigna a cada uno los nombres reales de los asistentes y enfatiza los bloques
+   que responden a sus pains. Después reúne los datos del brief (`plantillas/brief-demo.md`). Si faltan
    datos críticos (asistentes, dolor principal, duración, objetivo), pregúntalos
    de una vez; el resto márcalo como `[PENDIENTE: ...]`.
 3. Crea `demos/AAAA-MM-DD-empresa/` y genera, a partir de las plantillas:

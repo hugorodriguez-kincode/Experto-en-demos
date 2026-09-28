@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Propuesta de colaboración · {{ d.cliente.nombre }}</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo:#4F46E5; --indigo-2:#4338CA; --navy:#2E2A8C; --ink:#1F2937; --muted:#6B7280;
+  --line:#E5E7EB; --soft:#F5F5FF; --bg:#FFFFFF; --side:280px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg);font-size:18px;line-height:1.6}
+h1,h2,h3,.display{font-family:"Plus Jakarta Sans",Inter,sans-serif;letter-spacing:-.02em;line-height:1.1;margin:0}
+a{color:var(--indigo)}
+/* Navegación lateral */
+nav.side{position:fixed;inset:0 auto 0 0;width:var(--side);border-right:1px solid var(--line);background:#fff;display:flex;flex-direction:column;z-index:10}
+nav.side .brand{padding:22px 24px;font-weight:700;font-size:15px;border-bottom:1px solid var(--line)}
+nav.side ol{list-style:none;margin:0;padding:12px 0;overflow:auto;flex:1}
+nav.side a{display:block;padding:8px 24px;color:var(--muted);text-decoration:none;font-size:14px;border-left:3px solid transparent}
+nav.side a.on,nav.side a:hover{color:var(--indigo);border-left-color:var(--indigo);background:var(--soft)}
+nav.side .author{padding:16px 24px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+nav.side .author b{display:block;color:var(--ink);font-size:14px}
+main{margin-left:var(--side)}
+section{padding:96px 8vw;border-bottom:1px solid var(--line);scroll-margin-top:0}
+.wrap{max-width:900px;margin:0 auto}
+.eyebrow{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);margin-bottom:28px}
+.big{font-size:clamp(40px,6vw,68px);font-weight:800;color:var(--indigo)}
+.big em{font-style:normal;font-weight:400}
+.lead{font-size:clamp(22px,2.6vw,30px);color:var(--indigo);font-family:"Plus Jakarta Sans";line-height:1.35;margin:36px 0 20px}
+.quote{border-left:4px solid var(--navy);padding:4px 0 4px 28px;font-weight:700;font-size:clamp(20px,2.4vw,28px);color:var(--indigo);font-family:"Plus Jakarta Sans";line-height:1.35;margin:48px 0 0}
+.band{background:var(--indigo);color:#fff}
+.band .eyebrow,.band .big{color:#fff}
+.band .quote{color:#fff;border-color:#fff;font-weight:500}
+.dark{background:var(--navy);color:#fff}
+.dark .big,.dark .eyebrow{color:#fff}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:48px}
+.grid3 h3{color:var(--indigo);font-size:26px;margin-bottom:8px}
+.grid3 .frase{font-weight:600;margin-bottom:8px}
+.grid3 p,.grid3 li{font-size:16px;color:#374151}
+.grid3 ul{padding-left:20px;margin:12px 0 0}
+.cover{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center}
+.cover img{width:100%;max-width:320px;justify-self:center;border-radius:24px}
+.meta{font-size:17px;margin:6px 0}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px;counter-reset:f}
+.flow div{background:var(--soft);border-radius:16px;padding:24px;position:relative}
+.flow div::before{counter-increment:f;content:counter(f);display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--indigo);color:#fff;font-weight:700;font-size:15px;margin-bottom:12px}
+.flow b{display:block;font-family:"Plus Jakarta Sans";font-size:20px;color:var(--indigo)}
+.flow span{font-size:15px}
+.cast{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+.cast div{border:1px solid var(--line);border-radius:16px;padding:22px}
+.cast small{color:var(--muted);display:block;font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+.cast b{font-size:20px;font-family:"Plus Jakarta Sans"}
+.persona{display:grid;grid-template-columns:1fr 1.6fr;gap:40px;align-items:center;margin-top:40px}
+.persona .who{text-align:center}
+.persona .who .av{width:140px;height:140px;border-radius:50%;background:var(--soft);display:grid;place-items:center;margin:0 auto 12px;font-family:"Plus Jakarta Sans";font-size:44px;font-weight:800;color:var(--indigo)}
+.persona .who span{color:var(--indigo);font-size:20px}
+.video{position:relative;padding-top:62.5%;border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgba(46,42,140,.18)}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+ul.check{padding-left:22px}
+table{width:100%;border-collapse:collapse;margin:20px 0 8px;font-size:16px}
+th,td{border:1px solid var(--line);padding:12px 14px;text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:600}
+td.num,th.num{text-align:right;white-space:nowrap}
+tr.hi td{background:#EEF2FF;font-weight:700}
+.opt{margin-top:48px}
+.opt h3{font-size:24px;margin-bottom:6px}
+.tag{display:inline-block;background:var(--indigo);color:#fff;border-radius:999px;padding:2px 12px;font-size:13px;font-weight:600;margin-left:8px;vertical-align:middle}
+.callout{background:var(--soft);border-radius:16px;padding:24px 28px;margin-top:40px}
+.steps{counter-reset:s;list-style:none;padding:0;margin-top:36px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.steps li{background:rgba(255,255,255,.1);border-radius:12px;padding:16px 18px 16px 58px;position:relative}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:18px;top:14px;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:700;font-size:14px}
+.logos{display:flex;flex-wrap:wrap;gap:14px;margin-top:36px}
+.logos span{border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:10px 20px;font-weight:600}
+.team{display:grid;grid-template-columns:repeat(2,1fr);gap:32px;margin-top:48px}
+.team h3{font-size:30px;margin-bottom:10px}
+.team p{margin:4px 0}
+.team a{color:#fff}
+.conf{font-size:15px;color:var(--muted);max-width:720px}
+footer{padding:28px 8vw;color:var(--muted);font-size:13px}
+@media (max-width:900px){
+  nav.side{display:none} main{margin-left:0}
+  section{padding:64px 16px}
+  .cover,.persona,.grid3,.flow,.cast,.steps,.team{grid-template-columns:1fr}
+  .table-scroll{overflow-x:auto}
+}
+@media print{
+  nav.side{display:none} main{margin-left:0}
+  section{page-break-inside:avoid;padding:48px 40px}
+  .video{display:none}
+  .band,.dark{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+{% set c = d.cliente %}
+{% set p = d.precios %}
+<nav class="side" aria-label="Secciones">
+  <div class="brand">Propuesta de colaboración: {{ c.nombre }}</div>
+  <ol>
+    <li><a href="#portada">Portada</a></li>
+    <li><a href="#objetivo">El objetivo</a></li>
+    <li><a href="#oportunidad">La oportunidad</a></li>
+    <li><a href="#solucion">La solución</a></li>
+    <li><a href="#accion">Del insight a la acción</a></li>
+    <li><a href="#demo">Resumen de la demo</a></li>
+    {% for b in d.demo.bloques %}<li><a href="#demo-{{ b.clave }}">· {{ b.titular }}</a></li>{% endfor %}
+    <li><a href="#propuesta">Propuesta económica</a></li>
+    <li><a href="#pasos">Próximos pasos</a></li>
+    <li><a href="#seguridad">Seguridad</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ol>
+  <div class="author">Kincode<b>{{ d.autor.nombre }}</b></div>
+</nav>
+
+<main>
+<section id="portada">
+  <div class="wrap cover">
+    <div>
+      <h1 class="big">{{ d.portada.titular }}</h1>
+      <p class="lead">"{{ d.portada.subtitulo }}"</p>
+      <p class="meta">{{ d.portada.linea_integraciones }}</p>
+      <p class="meta">Preparado para: <b>{{ c.contacto.nombre }}</b>, {{ c.nombre }} · {{ d.fecha }}</p>
+    </div>
+    {% if d.portada.imagen %}<img src="{{ d.portada.imagen }}" alt="KAI, el asistente de Kincode">{% endif %}
+  </div>
+</section>
+
+<section id="objetivo" class="band">
+  <div class="wrap">
+    <div class="eyebrow">Tenemos claro el objetivo</div>
+    <h2 class="big">{{ d.objetivo.titular }}</h2>
+    <p class="quote">"{{ d.objetivo.cita }}"</p>
+  </div>
+</section>
+
+<section id="oportunidad">
+  <div class="wrap">
+    <div class="eyebrow">La oportunidad</div>
+    <h2 class="big">"{{ d.oportunidad.titular }}"</h2>
+    <p class="lead" style="color:var(--ink);font-size:21px"><b>Tu realidad:</b> {{ d.oportunidad.realidad }}</p>
+    <p><b>Tu desafío:</b> {{ d.oportunidad.desafio }}</p>
+    <div class="grid3">
+      {% for x in d.oportunidad.pains %}
+      <div><h3>{{ x.titulo }}</h3><div class="frase">{{ x.frase }}</div><p>{{ x.detalle }}</p></div>
+      {% endfor %}
+    </div>
+    <p class="quote">{{ d.oportunidad.insight }}</p>
+  </div>
+</section>
+
+<section id="solucion">
+  <div class="wrap">
+    <div class="eyebrow">La solución (1/2)</div>
+    <h2 class="big">Esto es cómo no vais a ciegas</h2>
+    <p class="lead">Qué está pasando hoy. Dónde. Y por qué.</p>
+    <div class="grid3">
+      {% for x in d.solucion.pilares %}
+      <div><h3>{{ x.titulo }}</h3><div class="frase">"{{ x.frase }}"</div>
+        <ul>{% for i in x.puntos %}<li>{{ i }}</li>{% endfor %}</ul></div>
+      {% endfor %}
+    </div>
+    <p class="quote">"{{ d.solucion.cita }}"</p>
+  </div>
+</section>
+
+<section id="accion">
+  <div class="wrap">
+    <div class="eyebrow">La solución (2/2)</div>
+    <h2 class="big">Del insight a la acción</h2>
+    <p class="lead">Cada señal cultural dispara una acción concreta a través de Kincode AI</p>
+    <div class="flow">
+      {% for x in d.del_insight_a_la_accion %}<div><b>{{ x.paso }}</b><span>{{ x.texto }}</span></div>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="demo" class="dark">
+  <div class="wrap">
+    <div class="eyebrow">Resumen de la demo</div>
+    <h2 class="big">Personajes de la demo</h2>
+    <div class="cast">
+      {% for b in d.demo.bloques %}
+      <div style="border-color:rgba(255,255,255,.3)"><small style="color:#C7D2FE">{{ b.rol }}</small><b>{{ d.demo.personajes[b.clave] }}</b></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% for b in d.demo.bloques %}
+<section id="demo-{{ b.clave }}">
+  <div class="wrap">
+    <div class="eyebrow">{{ b.etiqueta }}</div>
+    <h2 class="big">{{ b.titular }}</h2>
+    <ul class="check">{% for i in b.puntos %}<li>{{ i }}</li>{% endfor %}</ul>
+    <div class="persona">
+      <div class="who"><div class="av">{{ d.demo.personajes[b.clave][:1] }}</div><span>{{ b.rol }}</span><br><small>{{ d.demo.personajes[b.clave] }}</small></div>
+      {% if b.video %}<div><div class="video"><iframe src="{{ b.video }}" title="Demo: {{ b.titular }}" loading="lazy" allowfullscreen></iframe></div>
+      <p style="font-size:15px;margin-top:10px"><a href="{{ b.video|replace('/embed/','/share/') }}" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>{% endif %}
+    </div>
+  </div>
+</section>
+{% endfor %}
+
+<section id="propuesta">
+  <div class="wrap">
+    <div class="eyebrow">Propuesta económica</div>
+    <h2 class="big">{{ c.nombre }}</h2>
+    <p class="meta"><b>{{ p.n }} empleados</b> · {{ c.pais }} · {{ c.stack }}</p>
+
+    {% if p.mostrar_piloto %}
+    <div class="opt">
+      <h3>Opción 1: Piloto</h3>
+      <div class="table-scroll"><table>
+        <tr><th>Alcance</th><td>{{ p.piloto.personas }} empleados (~{{ p.piloto.pct }} % de la empresa)</td></tr>
+        <tr><th>Duración</th><td>{{ p.piloto.duracion }}</td></tr>
+        <tr><th>Coste</th><td><b>{{ p.piloto.coste }}</b></td></tr>
+        <tr><th>Si no se firma</th><td>{{ p.piloto.si_no }}</td></tr>
+      </table></div>
+    </div>
+    {% endif %}
+
+    <div class="opt">
+      <h3>{% if p.mostrar_piloto %}Opción 2: {% endif %}Implementación completa <span class="tag">-{{ p.descuento_pct }} %</span></h3>
+      <div class="table-scroll"><table>
+        <tr><th>Concepto</th><th class="num">Precio normal</th><th class="num">Precio final</th></tr>
+        <tr><td>Integración (pago único)</td><td class="num">{{ p.integracion|eur }}</td><td class="num">{{ p.integracion|eur }}</td></tr>
+        <tr><td>Precio/emp/mes</td><td class="num">{{ p.normal.precio|eur }}</td><td class="num"><b>{{ p.oferta.precio|eur(2) }}</b></td></tr>
+        <tr><td>Total mensual</td><td class="num">{{ p.normal.mensual|eur }}</td><td class="num">{{ p.oferta.mensual|eur(2) }}</td></tr>
+        <tr><td>Total año 1</td><td class="num">{{ p.normal.anio1|eur }}</td><td class="num"><b>{{ p.oferta.anio1|eur }}</b></td></tr>
+        <tr><td>Ahorro frente a la tarifa normal</td><td class="num">—</td><td class="num">-{{ p.oferta.ahorro|eur }} (-{{ p.oferta.ahorro_pct }} %)</td></tr>
+      </table></div>
+    </div>
+
+    {% if p.extras %}
+    <div class="opt">
+      <h3>Descuentos adicionales</h3>
+      <div class="table-scroll"><table>
+        <tr><th>Condición</th><th class="num">€/emp/mes</th><th class="num">Total mensual</th><th class="num">Total año 1</th><th class="num">Ahorro total</th></tr>
+        {% for f in p.extras %}
+        <tr{% if loop.last %} class="hi"{% endif %}><td>{{ f.nombre }}</td><td class="num">{{ f.precio|eur(2) }}</td><td class="num">{{ f.mensual|eur(2) }}</td><td class="num">{{ f.anio1|eur }}</td><td class="num">-{{ f.ahorro|eur }} (-{{ f.ahorro_pct }} %)</td></tr>
+        {% endfor %}
+      </table></div>
+    </div>
+    {% endif %}
+
+    <div class="callout">
+      <b>Ruta sugerida</b>
+      <p>{{ p.ruta }}</p>
+      <p style="margin-bottom:0">Con la mejor condición: <b>{{ p.mejor.precio|eur(2) }}/emp/mes</b>, menos de un café por persona al mes.</p>
+    </div>
+  </div>
+</section>
+
+<section id="pasos" class="dark">
+  <div class="wrap">
+    <div class="eyebrow">Próximos pasos</div>
+    <h2 class="big">{{ d.proximos_pasos.titular }}</h2>
+    <ol class="steps">{% for s in d.proximos_pasos.pasos %}<li>{{ s }}</li>{% endfor %}</ol>
+  </div>
+</section>
+
+<section id="seguridad">
+  <div class="wrap">
+    <div class="eyebrow">Cumplimiento y seguridad</div>
+    <h2 class="big" style="font-size:clamp(32px,4.4vw,52px)">{{ d.seguridad.titular }}</h2>
+    <ul class="check">{% for i in d.seguridad.puntos %}<li>{{ i }}</li>{% endfor %}</ul>
+    <div class="table-scroll"><table>
+      <tr><th>Stack tecnológico</th><th>Documentación</th></tr>
+      {% for s in d.seguridad.stack %}<tr><td>{{ s.nombre }}</td><td><a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.url }}</a></td></tr>{% endfor %}
+    </table></div>
+    <h3 style="margin-top:56px;font-size:28px">{{ d.integraciones.titular }}</h3>
+    <p>{{ d.integraciones.texto }}</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 class="big" style="font-size:clamp(32px,4.4vw,52px)">No estás solo en la transformación</h2>
+    <div class="logos">{% for l in d.clientes_logos %}<span>{{ l }}</span>{% endfor %}</div>
+  </div>
+</section>
+
+<section id="contacto" class="dark">
+  <div class="wrap">
+    <div class="eyebrow">Contacto</div>
+    <div class="team">
+      {% for m in d.equipo %}
+      <div><h3>{{ m.nombre }}</h3>
+        <p>📞 {{ m.telefono }}</p>
+        <p>📧 <a href="mailto:{{ m.email }}">{{ m.email }}</a></p>
+        <p>LinkedIn: <a href="https://www.linkedin.com/in/{{ m.linkedin }}" target="_blank" rel="noopener">@{{ m.linkedin }}</a></p></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Confidencial</div>
+    <p class="conf">{{ d.confidencial }}</p>
+  </div>
+</section>
+<footer>© {{ d.fecha[-4:] }} Kincode. Todos los derechos reservados.</footer>
+</main>
+
+<script>
+// Resalta la sección visible en la navegación lateral
+const links=[...document.querySelectorAll('nav.side a')];
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-40% 0px -55% 0px'});
+document.querySelectorAll('section[id]').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

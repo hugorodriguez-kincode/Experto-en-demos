@@ -1,0 +1,71 @@
+# Propuesta de GoLive: reconstruida desde el Qwilr original como ejemplo.
+# Regenerar con:  python3 herramientas/propuesta/generar.py demos/2026-09-golive/propuesta.yaml
+
+cliente:
+  nombre: GoLive
+  empleados: 132
+  pais: España
+  stack: "Teams + SharePoint"
+  logo: https://qwilr.imgix.net/66a355392b3a78171bb196d6/images/nxU5kQAe6Dd_NSXQCyrGEDSxquEozUDRmPyyFg.jpg?auto=format
+  contacto: { nombre: José Lobera, cargo: Gestión Humana }
+
+autor: { nombre: Hugo Rodríguez, email: hugo.rodriguez@kincode.ai }
+
+portada:
+  titular: "Convertir la cultura <em>GoLive</em> en su motor de ejecución"
+  subtitulo: "Feedback continuo, comunicación interna que llega y visibilidad real de la salud de tu empresa"
+  linea_integraciones: "Integrado en Teams y SharePoint. Con Bizneo vía API."
+  imagen: https://qwilr.imgix.net/66a355392b3a78171bb196d6/images/ecHaTSsTdWOMkl08Ek7H4I1tmQsRfL0jxPLaaA.jpg?auto=format
+
+objetivo:
+  titular: "Visibilidad real de tus 132 personas, directamente en Teams"
+  cita: "Vamos a hacer visible lo que hoy no ves: cómo está realmente cada persona de GoLive, qué comunicaciones llegan de verdad y dónde necesitas actuar, sin salir de Teams."
+
+oportunidad:
+  titular: "Habilidad para escuchar sin depender del email"
+  realidad: "Sin programa activo de clima desde 2022, correo saturado que nadie lee y José gestionando People prácticamente solo."
+  desafio: "Recoger feedback continuo, que las comunicaciones lleguen de verdad y tener visibilidad de la salud de GoLive, sin añadir carga manual."
+  pains:
+    - { titulo: Tiempo, frase: "Cuando lo veis ya ha pasado", detalle: "La última encuesta fue en 2022: llevas 3 años sin datos" }
+    - { titulo: Visibilidad real, frase: "No hay certeza de lo que pasa", detalle: "El correo está saturado: las comunicaciones internas no llegan ni se leen" }
+    - { titulo: Ejecución, frase: "Los datos no cambian nada", detalle: "Sin plan de acción" }
+  insight: "El problema no es la comunicación interna. Es que no sabes si llega."
+
+solucion:
+  pilares:
+    - titulo: Tiempo real
+      frase: "Medición diaria, no trimestral"
+      puntos: ["Directamente en Teams (donde ya trabajáis)", "Integrado con SharePoint para autoservicio", "Sin apps nuevas, sin fricción"]
+    - titulo: Predictibilidad
+      frase: "Identifica riesgo antes del daño"
+      puntos: ["Alertas automáticas", "La IA detecta patrones ocultos", "60 días de anticipación"]
+    - titulo: Acción
+      frase: "Convierte datos en decisiones"
+      puntos: ["Encuestas ad hoc tras hitos o situaciones concretas", "Segmentación por área, equipo y manager", "Comunicaciones internas que mides y que llegan"]
+  cita: "Escuchamos a tus 132 personas en GoLive directamente en Teams. José tiene visibilidad real de la salud de la empresa sin añadir carga manual."
+
+demo:
+  personajes:
+    empleado: Miguel
+    manager: Hugo
+    people: José Lobera
+    ceo: Javier Olcina
+  canales: "WhatsApp y Teams"
+
+precios:
+  piloto_personas: "36-40"
+  ruta_sugerida: "Piloto de 36-40 personas (1-2 meses) → managers prueban y validan → rollout completo en enero de 2027 con los 132 empleados."
+
+proximos_pasos:
+  titular: "Próximos pasos: 60 días de visibilidad real"
+  pasos:
+    - "Piloto con un grupo reducido"
+    - "Legal (GDPR y contrato)"
+    - "Ciberseguridad"
+    - "Sesión de alineamiento cultural"
+    - "Instalación del agente en Teams y WhatsApp"
+    - "Integración con el HRIS (Bizneo)"
+
+equipo:
+  - { nombre: Miguel Álvarez, telefono: "(+34) 677 970 653", email: miguel@kincode.ai, linkedin: miguelalvareztamariz }
+  - { nombre: Hugo Rodríguez, telefono: "(+34) 611 41 68 51", email: hugo.rodriguez@kincode.ai, linkedin: hugo-rodriguez }

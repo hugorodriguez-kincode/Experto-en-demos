@@ -1,0 +1,16 @@
+# Política de precios de Kincode. El generador de propuestas la usa por defecto.
+# Deducida de la propuesta de GoLive (sep 2026). [PENDIENTE: confirmar que es la política estándar]
+moneda: "€"
+precio_lista_emp_mes: 5.00      # tarifa normal por empleado y mes
+integracion_pago_unico: 1000    # pago único de integración
+descuento_especial: 0.28        # descuento sobre tarifa -> precio final (5 € -> 3,60 €)
+descuentos_adicionales:         # se aplican sobre el precio final
+  - nombre: "-10% firma anual"
+    pct: 0.10
+  - nombre: "-20% firma anual + pago anticipado"
+    pct: 0.20
+piloto:
+  porcentaje_empresa: 0.30      # ~30 % de la plantilla
+  duracion: "1-2 meses"
+  coste: "GRATUITO si se firma contrato anual"
+  si_no_se_firma: "tarifa normal por empleado/mes"

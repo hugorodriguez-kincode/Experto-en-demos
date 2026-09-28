@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Propuesta de colaboración · GoLive</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo:#4F46E5; --indigo-2:#4338CA; --navy:#2E2A8C; --ink:#1F2937; --muted:#6B7280;
+  --line:#E5E7EB; --soft:#F5F5FF; --bg:#FFFFFF; --side:280px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg);font-size:18px;line-height:1.6}
+h1,h2,h3,.display{font-family:"Plus Jakarta Sans",Inter,sans-serif;letter-spacing:-.02em;line-height:1.1;margin:0}
+a{color:var(--indigo)}
+/* Navegación lateral */
+nav.side{position:fixed;inset:0 auto 0 0;width:var(--side);border-right:1px solid var(--line);background:#fff;display:flex;flex-direction:column;z-index:10}
+nav.side .brand{padding:22px 24px;font-weight:700;font-size:15px;border-bottom:1px solid var(--line)}
+nav.side ol{list-style:none;margin:0;padding:12px 0;overflow:auto;flex:1}
+nav.side a{display:block;padding:8px 24px;color:var(--muted);text-decoration:none;font-size:14px;border-left:3px solid transparent}
+nav.side a.on,nav.side a:hover{color:var(--indigo);border-left-color:var(--indigo);background:var(--soft)}
+nav.side .author{padding:16px 24px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+nav.side .author b{display:block;color:var(--ink);font-size:14px}
+main{margin-left:var(--side)}
+section{padding:96px 8vw;border-bottom:1px solid var(--line);scroll-margin-top:0}
+.wrap{max-width:900px;margin:0 auto}
+.eyebrow{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);margin-bottom:28px}
+.big{font-size:clamp(40px,6vw,68px);font-weight:800;color:var(--indigo)}
+.big em{font-style:normal;font-weight:400}
+.lead{font-size:clamp(22px,2.6vw,30px);color:var(--indigo);font-family:"Plus Jakarta Sans";line-height:1.35;margin:36px 0 20px}
+.quote{border-left:4px solid var(--navy);padding:4px 0 4px 28px;font-weight:700;font-size:clamp(20px,2.4vw,28px);color:var(--indigo);font-family:"Plus Jakarta Sans";line-height:1.35;margin:48px 0 0}
+.band{background:var(--indigo);color:#fff}
+.band .eyebrow,.band .big{color:#fff}
+.band .quote{color:#fff;border-color:#fff;font-weight:500}
+.dark{background:var(--navy);color:#fff}
+.dark .big,.dark .eyebrow{color:#fff}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:48px}
+.grid3 h3{color:var(--indigo);font-size:26px;margin-bottom:8px}
+.grid3 .frase{font-weight:600;margin-bottom:8px}
+.grid3 p,.grid3 li{font-size:16px;color:#374151}
+.grid3 ul{padding-left:20px;margin:12px 0 0}
+.cover{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center}
+.cover img{width:100%;max-width:320px;justify-self:center;border-radius:24px}
+.meta{font-size:17px;margin:6px 0}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px;counter-reset:f}
+.flow div{background:var(--soft);border-radius:16px;padding:24px;position:relative}
+.flow div::before{counter-increment:f;content:counter(f);display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--indigo);color:#fff;font-weight:700;font-size:15px;margin-bottom:12px}
+.flow b{display:block;font-family:"Plus Jakarta Sans";font-size:20px;color:var(--indigo)}
+.flow span{font-size:15px}
+.cast{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+.cast div{border:1px solid var(--line);border-radius:16px;padding:22px}
+.cast small{color:var(--muted);display:block;font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+.cast b{font-size:20px;font-family:"Plus Jakarta Sans"}
+.persona{display:grid;grid-template-columns:1fr 1.6fr;gap:40px;align-items:center;margin-top:40px}
+.persona .who{text-align:center}
+.persona .who .av{width:140px;height:140px;border-radius:50%;background:var(--soft);display:grid;place-items:center;margin:0 auto 12px;font-family:"Plus Jakarta Sans";font-size:44px;font-weight:800;color:var(--indigo)}
+.persona .who span{color:var(--indigo);font-size:20px}
+.video{position:relative;padding-top:62.5%;border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgba(46,42,140,.18)}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+ul.check{padding-left:22px}
+table{width:100%;border-collapse:collapse;margin:20px 0 8px;font-size:16px}
+th,td{border:1px solid var(--line);padding:12px 14px;text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:600}
+td.num,th.num{text-align:right;white-space:nowrap}
+tr.hi td{background:#EEF2FF;font-weight:700}
+.opt{margin-top:48px}
+.opt h3{font-size:24px;margin-bottom:6px}
+.tag{display:inline-block;background:var(--indigo);color:#fff;border-radius:999px;padding:2px 12px;font-size:13px;font-weight:600;margin-left:8px;vertical-align:middle}
+.callout{background:var(--soft);border-radius:16px;padding:24px 28px;margin-top:40px}
+.steps{counter-reset:s;list-style:none;padding:0;margin-top:36px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.steps li{background:rgba(255,255,255,.1);border-radius:12px;padding:16px 18px 16px 58px;position:relative}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:18px;top:14px;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:700;font-size:14px}
+.logos{display:flex;flex-wrap:wrap;gap:14px;margin-top:36px}
+.logos span{border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:10px 20px;font-weight:600}
+.team{display:grid;grid-template-columns:repeat(2,1fr);gap:32px;margin-top:48px}
+.team h3{font-size:30px;margin-bottom:10px}
+.team p{margin:4px 0}
+.team a{color:#fff}
+.conf{font-size:15px;color:var(--muted);max-width:720px}
+footer{padding:28px 8vw;color:var(--muted);font-size:13px}
+@media (max-width:900px){
+  nav.side{display:none} main{margin-left:0}
+  section{padding:64px 16px}
+  .cover,.persona,.grid3,.flow,.cast,.steps,.team{grid-template-columns:1fr}
+  .table-scroll{overflow-x:auto}
+}
+@media print{
+  nav.side{display:none} main{margin-left:0}
+  section{page-break-inside:avoid;padding:48px 40px}
+  .video{display:none}
+  .band,.dark{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<nav class="side" aria-label="Secciones">
+  <div class="brand">Propuesta de colaboración: GoLive</div>
+  <ol>
+    <li><a href="#portada">Portada</a></li>
+    <li><a href="#objetivo">El objetivo</a></li>
+    <li><a href="#oportunidad">La oportunidad</a></li>
+    <li><a href="#solucion">La solución</a></li>
+    <li><a href="#accion">Del insight a la acción</a></li>
+    <li><a href="#demo">Resumen de la demo</a></li>
+<li><a href="#demo-empleado">· Foto de la cultura en tiempo real</a></li><li><a href="#demo-manager">· Equipar a los managers para el cambio</a></li><li><a href="#demo-people">· Alinear a los equipos en el cambio</a></li><li><a href="#demo-ceo">· Mejora de los resultados de negocio</a></li>    <li><a href="#propuesta">Propuesta económica</a></li>
+    <li><a href="#pasos">Próximos pasos</a></li>
+    <li><a href="#seguridad">Seguridad</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ol>
+  <div class="author">Kincode<b>Hugo Rodríguez</b></div>
+</nav>
+
+<main>
+<section id="portada">
+  <div class="wrap cover">
+    <div>
+      <h1 class="big">Convertir la cultura <em>GoLive</em> en su motor de ejecución</h1>
+      <p class="lead">"Feedback continuo, comunicación interna que llega y visibilidad real de la salud de tu empresa"</p>
+      <p class="meta">Integrado en Teams y SharePoint. Con Bizneo vía API.</p>
+      <p class="meta">Preparado para: <b>José Lobera</b>, GoLive · 28/09/2026</p>
+    </div>
+<img src="https://qwilr.imgix.net/66a355392b3a78171bb196d6/images/ecHaTSsTdWOMkl08Ek7H4I1tmQsRfL0jxPLaaA.jpg?auto=format" alt="KAI, el asistente de Kincode">  </div>
+</section>
+
+<section id="objetivo" class="band">
+  <div class="wrap">
+    <div class="eyebrow">Tenemos claro el objetivo</div>
+    <h2 class="big">Visibilidad real de tus 132 personas, directamente en Teams</h2>
+    <p class="quote">"Vamos a hacer visible lo que hoy no ves: cómo está realmente cada persona de GoLive, qué comunicaciones llegan de verdad y dónde necesitas actuar, sin salir de Teams."</p>
+  </div>
+</section>
+
+<section id="oportunidad">
+  <div class="wrap">
+    <div class="eyebrow">La oportunidad</div>
+    <h2 class="big">"Habilidad para escuchar sin depender del email"</h2>
+    <p class="lead" style="color:var(--ink);font-size:21px"><b>Tu realidad:</b> Sin programa activo de clima desde 2022, correo saturado que nadie lee y José gestionando People prácticamente solo.</p>
+    <p><b>Tu desafío:</b> Recoger feedback continuo, que las comunicaciones lleguen de verdad y tener visibilidad de la salud de GoLive, sin añadir carga manual.</p>
+    <div class="grid3">
+      <div><h3>Tiempo</h3><div class="frase">Cuando lo veis ya ha pasado</div><p>La última encuesta fue en 2022: llevas 3 años sin datos</p></div>
+      <div><h3>Visibilidad real</h3><div class="frase">No hay certeza de lo que pasa</div><p>El correo está saturado: las comunicaciones internas no llegan ni se leen</p></div>
+      <div><h3>Ejecución</h3><div class="frase">Los datos no cambian nada</div><p>Sin plan de acción</p></div>
+    </div>
+    <p class="quote">El problema no es la comunicación interna. Es que no sabes si llega.</p>
+  </div>
+</section>
+
+<section id="solucion">
+  <div class="wrap">
+    <div class="eyebrow">La solución (1/2)</div>
+    <h2 class="big">Esto es cómo no vais a ciegas</h2>
+    <p class="lead">Qué está pasando hoy. Dónde. Y por qué.</p>
+    <div class="grid3">
+      <div><h3>Tiempo real</h3><div class="frase">"Medición diaria, no trimestral"</div>
+        <ul><li>Directamente en Teams (donde ya trabajáis)</li><li>Integrado con SharePoint para autoservicio</li><li>Sin apps nuevas, sin fricción</li></ul></div>
+      <div><h3>Predictibilidad</h3><div class="frase">"Identifica riesgo antes del daño"</div>
+        <ul><li>Alertas automáticas</li><li>La IA detecta patrones ocultos</li><li>60 días de anticipación</li></ul></div>
+      <div><h3>Acción</h3><div class="frase">"Convierte datos en decisiones"</div>
+        <ul><li>Encuestas ad hoc tras hitos o situaciones concretas</li><li>Segmentación por área, equipo y manager</li><li>Comunicaciones internas que mides y que llegan</li></ul></div>
+    </div>
+    <p class="quote">"Escuchamos a tus 132 personas en GoLive directamente en Teams. José tiene visibilidad real de la salud de la empresa sin añadir carga manual."</p>
+  </div>
+</section>
+
+<section id="accion">
+  <div class="wrap">
+    <div class="eyebrow">La solución (2/2)</div>
+    <h2 class="big">Del insight a la acción</h2>
+    <p class="lead">Cada señal cultural dispara una acción concreta a través de Kincode AI</p>
+    <div class="flow">
+<div><b>Señal</b><span>El score baja por debajo de la media de la compañía</span></div><div><b>Insight</b><span>Visibilidad de la señal para el equipo de People & Culture</span></div><div><b>Acción</b><span>Propuesta de plan de acción</span></div><div><b>Monitorización</b><span>Una vez aprobado, monitorizamos el plan de acción y los KPIs</span></div>    </div>
+  </div>
+</section>
+
+<section id="demo" class="dark">
+  <div class="wrap">
+    <div class="eyebrow">Resumen de la demo</div>
+    <h2 class="big">Personajes de la demo</h2>
+    <div class="cast">
+      <div style="border-color:rgba(255,255,255,.3)"><small style="color:#C7D2FE">Empleado</small><b>Miguel</b></div>
+      <div style="border-color:rgba(255,255,255,.3)"><small style="color:#C7D2FE">Manager</small><b>Hugo</b></div>
+      <div style="border-color:rgba(255,255,255,.3)"><small style="color:#C7D2FE">Chief People Officer</small><b>José Lobera</b></div>
+      <div style="border-color:rgba(255,255,255,.3)"><small style="color:#C7D2FE">CEO</small><b>Javier Olcina</b></div>
+    </div>
+  </div>
+</section>
+
+<section id="demo-empleado">
+  <div class="wrap">
+    <div class="eyebrow">Cómo capturamos el dato</div>
+    <h2 class="big">Foto de la cultura en tiempo real</h2>
+    <ul class="check"><li>Integración transparente con WhatsApp y Teams</li><li>Sin fricción: respuestas en 1 clic</li><li>Relevancia de los datos: 70-90 % de tasa de respuesta</li></ul>
+    <div class="persona">
+      <div class="who"><div class="av">M</div><span>Empleado</span><br><small>Miguel</small></div>
+<div><div class="video"><iframe src="https://www.loom.com/embed/ca3dac93b0cf48c3a4f57d752d2364cb" title="Demo: Foto de la cultura en tiempo real" loading="lazy" allowfullscreen></iframe></div>
+      <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/ca3dac93b0cf48c3a4f57d752d2364cb" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>    </div>
+  </div>
+</section>
+<section id="demo-manager">
+  <div class="wrap">
+    <div class="eyebrow">Cómo aprovechamos los datos</div>
+    <h2 class="big">Equipar a los managers para el cambio</h2>
+    <ul class="check"><li>Entender el sentimiento del equipo</li><li>Guiar a los miembros del equipo</li><li>Mejorar las habilidades de los managers</li></ul>
+    <div class="persona">
+      <div class="who"><div class="av">H</div><span>Manager</span><br><small>Hugo</small></div>
+<div><div class="video"><iframe src="https://www.loom.com/embed/871bdfd62fd048f0a953173e510f1790" title="Demo: Equipar a los managers para el cambio" loading="lazy" allowfullscreen></iframe></div>
+      <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/871bdfd62fd048f0a953173e510f1790" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>    </div>
+  </div>
+</section>
+<section id="demo-people">
+  <div class="wrap">
+    <div class="eyebrow">Cómo accionamos los datos</div>
+    <h2 class="big">Alinear a los equipos en el cambio</h2>
+    <ul class="check"><li>KAI: un empleado de IA pendiente del equipo 24/7</li><li>Planes de acción propuestos de forma recurrente</li></ul>
+    <div class="persona">
+      <div class="who"><div class="av">J</div><span>Chief People Officer</span><br><small>José Lobera</small></div>
+<div><div class="video"><iframe src="https://www.loom.com/embed/b16ab8d65d554f58bf2ae93dca09e33a" title="Demo: Alinear a los equipos en el cambio" loading="lazy" allowfullscreen></iframe></div>
+      <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/b16ab8d65d554f58bf2ae93dca09e33a" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>    </div>
+  </div>
+</section>
+<section id="demo-ceo">
+  <div class="wrap">
+    <div class="eyebrow">Los resultados que obtenemos</div>
+    <h2 class="big">Mejora de los resultados de negocio</h2>
+    <ul class="check"><li>Cultura organizativa alineada</li><li>Mejora de la satisfacción y el compromiso</li></ul>
+    <div class="persona">
+      <div class="who"><div class="av">J</div><span>CEO</span><br><small>Javier Olcina</small></div>
+<div><div class="video"><iframe src="https://www.loom.com/embed/75cfbd417c274c2f8b42e19246a60692" title="Demo: Mejora de los resultados de negocio" loading="lazy" allowfullscreen></iframe></div>
+      <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/75cfbd417c274c2f8b42e19246a60692" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>    </div>
+  </div>
+</section>
+
+<section id="propuesta">
+  <div class="wrap">
+    <div class="eyebrow">Propuesta económica</div>
+    <h2 class="big">GoLive</h2>
+    <p class="meta"><b>132 empleados</b> · España · Teams + SharePoint</p>
+
+    <div class="opt">
+      <h3>Opción 1: Piloto</h3>
+      <div class="table-scroll"><table>
+        <tr><th>Alcance</th><td>36-40 empleados (~30 % de la empresa)</td></tr>
+        <tr><th>Duración</th><td>1-2 meses</td></tr>
+        <tr><th>Coste</th><td><b>GRATUITO si se firma contrato anual</b></td></tr>
+        <tr><th>Si no se firma</th><td>5 €/emp/mes</td></tr>
+      </table></div>
+    </div>
+
+    <div class="opt">
+      <h3>Opción 2: Implementación completa <span class="tag">-28 %</span></h3>
+      <div class="table-scroll"><table>
+        <tr><th>Concepto</th><th class="num">Precio normal</th><th class="num">Precio final</th></tr>
+        <tr><td>Integración (pago único)</td><td class="num">1.000 €</td><td class="num">1.000 €</td></tr>
+        <tr><td>Precio/emp/mes</td><td class="num">5 €</td><td class="num"><b>3,60 €</b></td></tr>
+        <tr><td>Total mensual</td><td class="num">660 €</td><td class="num">475,20 €</td></tr>
+        <tr><td>Total año 1</td><td class="num">8.920 €</td><td class="num"><b>6.702 €</b></td></tr>
+        <tr><td>Ahorro frente a la tarifa normal</td><td class="num">—</td><td class="num">-2.218 € (-25 %)</td></tr>
+      </table></div>
+    </div>
+
+    <div class="opt">
+      <h3>Descuentos adicionales</h3>
+      <div class="table-scroll"><table>
+        <tr><th>Condición</th><th class="num">€/emp/mes</th><th class="num">Total mensual</th><th class="num">Total año 1</th><th class="num">Ahorro total</th></tr>
+        <tr><td>-10% firma anual</td><td class="num">3,24 €</td><td class="num">427,68 €</td><td class="num">6.132 €</td><td class="num">-2.788 € (-31 %)</td></tr>
+        <tr class="hi"><td>-20% firma anual + pago anticipado</td><td class="num">2,88 €</td><td class="num">380,16 €</td><td class="num">5.562 €</td><td class="num">-3.358 € (-38 %)</td></tr>
+      </table></div>
+    </div>
+
+    <div class="callout">
+      <b>Ruta sugerida</b>
+      <p>Piloto de 36-40 personas (1-2 meses) → managers prueban y validan → rollout completo en enero de 2027 con los 132 empleados.</p>
+      <p style="margin-bottom:0">Con la mejor condición: <b>2,88 €/emp/mes</b>, menos de un café por persona al mes.</p>
+    </div>
+  </div>
+</section>
+
+<section id="pasos" class="dark">
+  <div class="wrap">
+    <div class="eyebrow">Próximos pasos</div>
+    <h2 class="big">Próximos pasos: 60 días de visibilidad real</h2>
+    <ol class="steps"><li>Piloto con un grupo reducido</li><li>Legal (GDPR y contrato)</li><li>Ciberseguridad</li><li>Sesión de alineamiento cultural</li><li>Instalación del agente en Teams y WhatsApp</li><li>Integración con el HRIS (Bizneo)</li></ol>
+  </div>
+</section>
+
+<section id="seguridad">
+  <div class="wrap">
+    <div class="eyebrow">Cumplimiento y seguridad</div>
+    <h2 class="big" style="font-size:clamp(32px,4.4vw,52px)">Nuestro stack tecnológico cumple con el estándar ISO 27001</h2>
+    <ul class="check"><li>Auditorías anuales de Kincode por nuestro partner IronWolf Security, según los estándares OWASP</li></ul>
+    <div class="table-scroll"><table>
+      <tr><th>Stack tecnológico</th><th>Documentación</th></tr>
+<tr><td>Amazon Web Services (AWS)</td><td><a href="https://aws.amazon.com/es/security/" target="_blank" rel="noopener">https://aws.amazon.com/es/security/</a></td></tr><tr><td>Heroku (basado en AWS)</td><td><a href="https://www.heroku.com/compliance" target="_blank" rel="noopener">https://www.heroku.com/compliance</a></td></tr><tr><td>MongoDB (basado en AWS)</td><td><a href="https://www.mongodb.com/trust" target="_blank" rel="noopener">https://www.mongodb.com/trust</a></td></tr><tr><td>GitHub</td><td><a href="https://github.com/security" target="_blank" rel="noopener">https://github.com/security</a></td></tr>    </table></div>
+    <h3 style="margin-top:56px;font-size:28px">Conecta todos tus datos y aplicaciones en un mismo lugar</h3>
+    <p>Ahorra tiempo y esfuerzo conectando Kincode con otras aplicaciones. Seguimos añadiendo más, y si no encuentras tu aplicación, podemos integrarla vía API.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 class="big" style="font-size:clamp(32px,4.4vw,52px)">No estás solo en la transformación</h2>
+    <div class="logos"><span>Danone</span><span>Qaracter</span><span>Taxdown</span><span>PropHero</span><span>Inversimply</span><span>Namencis Education</span></div>
+  </div>
+</section>
+
+<section id="contacto" class="dark">
+  <div class="wrap">
+    <div class="eyebrow">Contacto</div>
+    <div class="team">
+      <div><h3>Miguel Álvarez</h3>
+        <p>📞 (+34) 677 970 653</p>
+        <p>📧 <a href="mailto:miguel@kincode.ai">miguel@kincode.ai</a></p>
+        <p>LinkedIn: <a href="https://www.linkedin.com/in/miguelalvareztamariz" target="_blank" rel="noopener">@miguelalvareztamariz</a></p></div>
+      <div><h3>Hugo Rodríguez</h3>
+        <p>📞 (+34) 611 41 68 51</p>
+        <p>📧 <a href="mailto:hugo.rodriguez@kincode.ai">hugo.rodriguez@kincode.ai</a></p>
+        <p>LinkedIn: <a href="https://www.linkedin.com/in/hugo-rodriguez" target="_blank" rel="noopener">@hugo-rodriguez</a></p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Confidencial</div>
+    <p class="conf">Este documento contiene propiedad intelectual confidencial, conocimientos técnicos y otra información propiedad de Kincode. El acceso a esta información y su uso están estrictamente limitados y controlados por Kincode. El destinatario no puede copiar, distribuir ni divulgar este documento, incluidos los resúmenes de su contenido, a terceros.</p>
+  </div>
+</section>
+<footer>© 2026 Kincode. Todos los derechos reservados.</footer>
+</main>
+
+<script>
+// Resalta la sección visible en la navegación lateral
+const links=[...document.querySelectorAll('nav.side a')];
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-40% 0px -55% 0px'});
+document.querySelectorAll('section[id]').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>
