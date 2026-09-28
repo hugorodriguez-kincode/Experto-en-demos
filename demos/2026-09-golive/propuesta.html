@@ -6,156 +6,198 @@
 <title>Propuesta de colaboración · GoLive</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --indigo:#4F46E5; --indigo-2:#4338CA; --navy:#2E2A8C; --ink:#1F2937; --muted:#6B7280;
-  --line:#E5E7EB; --soft:#F5F5FF; --bg:#FFFFFF; --side:280px; --mbar:56px;
+  --indigo:#4F46E5; --indigo-2:#4338CA; --violet:#7C3AED; --navy:#221F5E; --ink-bg:#0B0A1A;
+  --ink:#161328; --muted:#6B6B85; --line:rgba(22,19,40,.12); --soft:#F4F4FF; --bg:#FFFFFF;
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg);font-size:18px;line-height:1.6}
-h1,h2,h3,.display{font-family:"Plus Jakarta Sans",Inter,sans-serif;letter-spacing:-.02em;line-height:1.1;margin:0}
-a{color:var(--indigo)}
-button{font:inherit}
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:#000;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.display{font-family:"Plus Jakarta Sans",Inter,sans-serif;letter-spacing:-.02em;line-height:1.08;margin:0}
+a{color:inherit}
+button{font:inherit;background:none;border:0}
 
-/* Barra de progreso de lectura */
-#progress{position:fixed;top:0;left:0;height:4px;width:0%;background:linear-gradient(90deg,var(--indigo),#818CF8);z-index:60;transition:width .12s linear}
+/* ===== El "deck": una diapositiva por pantalla, con scroll-snap nativo ===== */
+.deck{height:100dvh;height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch}
+.slide{min-height:100dvh;min-height:100vh;scroll-snap-align:start;scroll-snap-stop:always;
+  display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;
+  padding:calc(76px + 2vh) 8vw 76px}
+.slide::before{content:"";position:absolute;inset:0;z-index:0;opacity:.5;
+  background-image:radial-gradient(circle,rgba(127,127,255,.18) 1px,transparent 1.4px);background-size:26px 26px}
+.content{position:relative;z-index:1;max-width:980px;width:100%;margin:0 auto;max-height:calc(100vh - 76px - 76px - 2vh);
+  overflow-y:auto;padding-right:8px;opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease}
+.slide.active .content{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.content{transition:none;opacity:1;transform:none}}
+noscript .content, html.no-js .content{opacity:1;transform:none}
 
-/* Navegación lateral (desktop) / cajón (móvil) */
-nav.side{position:fixed;inset:0 auto 0 0;width:var(--side);border-right:1px solid var(--line);background:#fff;display:flex;flex-direction:column;z-index:41}
-nav.side .brand{padding:22px 24px;font-weight:700;font-size:15px;border-bottom:1px solid var(--line)}
-nav.side ol{list-style:none;margin:0;padding:12px 0;overflow:auto;flex:1}
-nav.side a{display:block;padding:8px 24px;color:var(--muted);text-decoration:none;font-size:14px;border-left:3px solid transparent}
-nav.side a.on,nav.side a:hover{color:var(--indigo);border-left-color:var(--indigo);background:var(--soft)}
-nav.side .author{padding:16px 24px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
-nav.side .author b{display:block;color:var(--ink);font-size:14px}
-main{margin-left:var(--side)}
+/* Temas de color por diapositiva */
+.theme-light{background:var(--bg);color:var(--ink)}
+.theme-light::before{opacity:.35}
+.theme-tint{background:var(--soft);color:var(--ink)}
+.theme-indigo{background:radial-gradient(circle at 12% 18%,#7C7AF0 0%,transparent 55%),radial-gradient(circle at 88% 82%,#3B2FA0 0%,transparent 55%),var(--indigo);color:#fff}
+.theme-navy{background:radial-gradient(circle at 85% 15%,#3E3894 0%,transparent 55%),radial-gradient(circle at 10% 90%,#171449 0%,transparent 55%),var(--navy);color:#fff}
+.theme-dark{background:radial-gradient(circle at 50% 0%,#241F5C 0%,transparent 60%),var(--ink-bg);color:#fff}
+.theme-indigo::before,.theme-navy::before,.theme-dark::before{opacity:.16;background-image:radial-gradient(circle,rgba(255,255,255,.5) 1px,transparent 1.4px)}
 
-/* Barra móvil + cajón + overlay */
-.mobile-bar{display:none}
-.overlay{display:none}
-@media (max-width:900px){
-  .mobile-bar{display:flex;position:fixed;top:0;left:0;right:0;height:var(--mbar);background:#fff;
-    border-bottom:1px solid var(--line);align-items:center;gap:12px;padding:0 16px;z-index:45}
-  .mobile-bar button{background:none;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-weight:600;color:var(--ink)}
-  main{margin-left:0;padding-top:var(--mbar)}
-  nav.side{top:var(--mbar);width:84vw;max-width:320px;transform:translateX(-105%);transition:transform .25s ease;box-shadow:0 20px 50px rgba(0,0,0,.25)}
-  nav.side.open{transform:translateX(0)}
-  .overlay{display:block;position:fixed;inset:0;top:var(--mbar);background:rgba(17,24,39,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
-  .overlay.show{opacity:1;pointer-events:auto}
-}
+.kicker{display:flex;align-items:center;gap:12px;margin-bottom:26px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:13px;opacity:.8}
+.kicker .idx{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:currentColor;color:transparent;position:relative;font-size:0}
+.kicker .idx::after{content:attr(data-n)}
+.theme-light .kicker .idx,.theme-tint .kicker .idx{background:var(--indigo)}
+.kicker .idx{background:var(--indigo);color:#fff!important;font-size:13px}
+.theme-indigo .kicker .idx,.theme-navy .kicker .idx,.theme-dark .kicker .idx{background:rgba(255,255,255,.18)}
 
-section{padding:96px 8vw;border-bottom:1px solid var(--line);scroll-margin-top:24px}
-.wrap{max-width:900px;margin:0 auto}
-.eyebrow{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);margin-bottom:28px}
-.big{font-size:clamp(40px,6vw,68px);font-weight:800;color:var(--indigo)}
-.big em{font-style:normal;font-weight:400}
-.lead{font-size:clamp(22px,2.6vw,30px);color:var(--indigo);font-family:"Plus Jakarta Sans";line-height:1.35;margin:36px 0 20px}
-.quote{border-left:4px solid var(--navy);padding:4px 0 4px 28px;font-weight:700;font-size:clamp(20px,2.4vw,28px);color:var(--indigo);font-family:"Plus Jakarta Sans";line-height:1.35;margin:48px 0 0}
-.band{background:var(--indigo);color:#fff}
-.band .eyebrow,.band .big{color:#fff}
-.band .quote{color:#fff;border-color:#fff;font-weight:500}
-.dark{background:var(--navy);color:#fff}
-.dark .big,.dark .eyebrow{color:#fff}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:48px}
-.grid3 h3{color:var(--indigo);font-size:26px;margin-bottom:8px}
-.grid3 .frase{font-weight:600;margin-bottom:8px}
-.grid3 p,.grid3 li{font-size:16px;color:#374151}
-.grid3 ul{padding-left:20px;margin:12px 0 0}
-.grid3>div{transition:transform .2s,box-shadow .2s;border-radius:16px;padding:20px}
-.grid3>div:hover{transform:translateY(-4px);box-shadow:0 16px 32px rgba(46,42,140,.1);background:var(--soft)}
-.cover{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center}
-.cover img{width:100%;max-width:320px;justify-self:center;border-radius:24px}
-.meta{font-size:17px;margin:6px 0}
-.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px;counter-reset:f}
-.flow div{background:var(--soft);border-radius:16px;padding:24px;position:relative;transition:transform .2s}
-.flow div:hover{transform:translateY(-4px)}
-.flow div::before{counter-increment:f;content:counter(f);display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--indigo);color:#fff;font-weight:700;font-size:15px;margin-bottom:12px}
-.flow b{display:block;font-family:"Plus Jakarta Sans";font-size:20px;color:var(--indigo)}
-.flow span{font-size:15px}
+h1.big,h2.big{font-size:clamp(34px,5vw,58px);font-weight:800}
+h1.big em{font-style:normal;opacity:.75}
+.theme-indigo h2.big,.theme-navy h2.big,.theme-dark h1.big{color:#fff}
+.theme-light h2.big,.theme-tint h2.big{color:var(--indigo)}
+.lead{font-size:clamp(19px,2vw,24px);line-height:1.5;margin:22px 0 0;max-width:52ch}
+.eyebrow-txt{opacity:.85}
+.quote-xl{font-family:"Plus Jakarta Sans";font-weight:700;font-size:clamp(24px,3.4vw,40px);line-height:1.3;margin:0}
+.h3{font-size:22px;font-weight:700;margin:0 0 4px}
+p.small{font-size:15px;color:var(--muted)}
+.theme-indigo p.small,.theme-navy p.small,.theme-dark p.small{color:rgba(255,255,255,.75)}
 
-/* Controles de pestañas (persona / piloto-implementación / condición) 100% CSS, sin JS */
-.tabgroup{display:flex;flex-wrap:wrap;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:8px}
+.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:26px;transition:transform .2s}
+.theme-light .card,.theme-tint .card{background:#fff;border-color:var(--line);box-shadow:0 10px 30px rgba(34,31,94,.06)}
+.card:hover{transform:translateY(-4px)}
+.card h3{font-size:21px;margin-bottom:6px}
+.card .frase{font-weight:600;opacity:.9;margin-bottom:10px}
+.card ul{padding-left:20px;margin:10px 0 0;font-size:15.5px}
+.card ul li+li{margin-top:4px}
+.pain-num{font-family:"Plus Jakarta Sans";font-size:44px;font-weight:800;opacity:.35;line-height:1;margin-bottom:6px}
+
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:12px;counter-reset:f}
+.flow div{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:20px}
+.flow div::before{counter-increment:f;content:counter(f);display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#fff;color:var(--navy);font-weight:800;font-size:14px;margin-bottom:12px}
+.flow b{display:block;font-family:"Plus Jakarta Sans";font-size:18px}
+.flow span{font-size:14.5px;opacity:.85}
+
+.cover-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:40px;align-items:center}
+.cover-grid img{width:100%;max-width:300px;justify-self:center;filter:drop-shadow(0 20px 40px rgba(0,0,0,.35))}
+.meta-line{font-size:16.5px;margin:6px 0;opacity:.9}
+
+/* Pestañas CSS-only (personajes / piloto-implementación / condición) */
+.tabgroup{display:flex;flex-wrap:wrap;gap:10px}
 .tab-radio{position:absolute;opacity:0;width:1px;height:1px}
-.tab-btn,.cast-card{cursor:pointer;user-select:none;border:1.5px solid var(--line);border-radius:14px;padding:10px 20px;font-weight:600;font-size:15px;transition:.15s;background:#fff;color:var(--ink)}
-.tab-radio:checked+.tab-btn{background:var(--indigo);color:#fff;border-color:var(--indigo)}
-.tab-radio:focus-visible+.tab-btn,.tab-radio:focus-visible+.cast-card{outline:2px solid var(--indigo);outline-offset:3px}
-.tab-panel{display:none;flex-basis:100%;margin-top:8px}
-.hint-click{font-size:13px;color:var(--muted);margin:-4px 0 0}
-.dark .hint-click{color:#C7D2FE}
+.tab-btn,.cast-card{cursor:pointer;user-select:none;border:1.5px solid rgba(255,255,255,.25);border-radius:14px;
+  padding:10px 18px;font-weight:600;font-size:15px;transition:.15s;background:rgba(255,255,255,.05);color:inherit}
+.tab-btn.sm{padding:8px 16px;font-size:14px;border-color:var(--line);background:#fff;color:var(--ink)}
+.theme-indigo .tab-btn.sm,.theme-navy .tab-btn.sm,.theme-dark .tab-btn.sm{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff}
+.tab-radio:checked+.tab-btn{background:#fff;color:var(--navy);border-color:#fff}
+.tab-radio:checked+.tab-btn.sm{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+.tab-radio:focus-visible+label{outline:2px solid #fff;outline-offset:3px}
+.tab-panel{display:none;flex-basis:100%;margin-top:18px}
+.hint-click{font-size:14px;opacity:.75;margin:2px 0 16px}
 
-/* Personajes de la demo */
-.cast-card{flex:1 1 180px;text-align:center;padding:20px 16px;border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.04);color:#fff}
-.cast-card small{display:block;color:#C7D2FE;font-size:13px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
-.cast-card b{font-size:19px;font-family:"Plus Jakarta Sans"}
+.cast-card{flex:1 1 160px;text-align:center;padding:18px 14px}
+.cast-card small{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.06em;opacity:.7;margin-bottom:4px}
+.cast-card b{font-size:18px;font-family:"Plus Jakarta Sans"}
 .tab-radio:checked+.cast-card{background:#fff;color:var(--navy)}
-.tab-radio:checked+.cast-card small{color:var(--indigo)}
-.persona{display:grid;grid-template-columns:1fr 1.6fr;gap:40px;align-items:center;margin-top:8px}
+
+.persona{display:grid;grid-template-columns:1fr 1.5fr;gap:28px;align-items:center;margin-top:22px}
 .persona .who{text-align:center}
-.persona .who .av{width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center;margin:0 auto 12px;font-family:"Plus Jakarta Sans";font-size:38px;font-weight:800;color:#fff}
-.persona .who span{color:#C7D2FE;font-size:18px}
-.video{position:relative;padding-top:62.5%;border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.persona .who .av{width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,.1);display:grid;place-items:center;
+  margin:0 auto 10px;font-family:"Plus Jakarta Sans";font-size:32px;font-weight:800}
+.video{position:relative;padding-top:62.5%;border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.4)}
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-ul.check{padding-left:22px}
-table{width:100%;border-collapse:collapse;margin:20px 0 8px;font-size:16px}
-th,td{border:1px solid var(--line);padding:12px 14px;text-align:left;vertical-align:top}
-th{background:var(--soft);font-weight:600}
+ul.check{padding-left:22px;margin:14px 0 0}
+ul.check li+li{margin-top:6px}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+.stat{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:18px}
+.theme-light .stat,.theme-tint .stat{background:var(--soft);border-color:var(--line)}
+.stat b{display:block;font-family:"Plus Jakarta Sans";font-size:clamp(20px,2.2vw,27px)}
+.stat span{font-size:13.5px;opacity:.8}
+.stat.hi{background:rgba(255,255,255,.16)}
+.theme-light .stat.hi,.theme-tint .stat.hi{background:#EEF2FF;border-color:var(--indigo)}
+.card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+.card-grid>div{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:18px}
+.card-grid b{display:block;font-family:"Plus Jakarta Sans";font-size:17px;margin-bottom:3px}
+.card-grid span{font-size:13.5px;opacity:.8}
+.tag{display:inline-block;background:rgba(255,255,255,.18);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:600;margin-left:8px;vertical-align:middle}
+
+details.detail{margin-top:18px}
+details.detail summary{cursor:pointer;font-weight:600;font-size:15px;opacity:.9;list-style:none}
+details.detail summary::-webkit-details-marker{display:none}
+details.detail summary::before{content:"▸ ";display:inline-block;transition:transform .15s}
+details.detail[open] summary::before{transform:rotate(90deg)}
+table{width:100%;border-collapse:collapse;margin:14px 0 4px;font-size:14.5px}
+th,td{border:1px solid rgba(255,255,255,.16);padding:10px 12px;text-align:left;vertical-align:top}
+th{background:rgba(255,255,255,.08);font-weight:600}
+.theme-light th,.theme-tint th{background:var(--soft);border-color:var(--line)}
+.theme-light td,.theme-tint td{border-color:var(--line)}
 td.num,th.num{text-align:right;white-space:nowrap}
-tr.hi td{background:#EEF2FF;font-weight:700}
-.opt{margin-top:48px}
-.opt h3{font-size:24px;margin-bottom:6px}
-.tag{display:inline-block;background:var(--indigo);color:#fff;border-radius:999px;padding:2px 12px;font-size:13px;font-weight:600;margin-left:8px;vertical-align:middle}
+tr.hi td{background:rgba(255,255,255,.1);font-weight:700}
+.theme-light tr.hi td,.theme-tint tr.hi td{background:#EEF2FF}
 
-/* Tarjetas de estadística (precio interactivo) */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
-.stat{background:var(--soft);border-radius:16px;padding:20px}
-.stat b{display:block;font-family:"Plus Jakarta Sans";font-size:clamp(22px,2.4vw,30px);color:var(--indigo)}
-.stat span{font-size:14px;color:var(--muted)}
-.card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
-.card-grid>div{background:var(--soft);border-radius:16px;padding:20px}
-.card-grid b{display:block;font-family:"Plus Jakarta Sans";font-size:19px;color:var(--indigo);margin-bottom:4px}
-.card-grid span{font-size:14px;color:var(--muted)}
+.callout{background:rgba(255,255,255,.08);border-radius:18px;padding:22px 26px;margin-top:26px}
+.theme-light .callout,.theme-tint .callout{background:var(--soft)}
+.cta{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--indigo)!important;text-decoration:none;
+  font-weight:700;border-radius:999px;padding:13px 24px;margin-top:16px;transition:.15s}
+.cta:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.theme-light .cta,.theme-tint .cta{background:var(--indigo);color:#fff!important}
 
-.callout{background:var(--soft);border-radius:16px;padding:24px 28px;margin-top:40px}
-.cta{display:inline-flex;align-items:center;gap:8px;background:var(--indigo);color:#fff!important;text-decoration:none;font-weight:700;border-radius:999px;padding:14px 26px;margin-top:18px;transition:.15s}
-.cta:hover{background:var(--indigo-2);transform:translateY(-2px)}
-.cta.ghost{background:transparent;color:var(--indigo)!important;border:1.5px solid var(--indigo)}
-.dark .cta.ghost{color:#fff!important;border-color:#fff}
+.steps{counter-reset:s;list-style:none;padding:0;margin-top:8px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.steps li{background:rgba(255,255,255,.08);border-radius:14px;padding:14px 16px 14px 52px;position:relative;font-size:15.5px}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:16px;top:13px;width:26px;height:26px;border-radius:50%;
+  background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:800;font-size:13px}
 
-.steps{counter-reset:s;list-style:none;padding:0;margin-top:36px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.steps li{background:rgba(255,255,255,.1);border-radius:12px;padding:16px 18px 16px 58px;position:relative}
-.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:18px;top:14px;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:700;font-size:14px}
-.logos{display:flex;flex-wrap:wrap;gap:14px;margin-top:36px}
-.logos span{border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:10px 20px;font-weight:600}
-.team{display:grid;grid-template-columns:repeat(2,1fr);gap:32px;margin-top:48px}
-.team h3{font-size:30px;margin-bottom:10px}
-.team p{margin:4px 0}
-.team a{color:#fff}
-.conf{font-size:15px;color:var(--muted);max-width:720px}
-footer{padding:28px 8vw;color:var(--muted);font-size:13px}
+.pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.pills span{border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:9px 18px;font-weight:600;font-size:14.5px}
 
-/* Botón flotante */
-.fab{position:fixed;right:20px;bottom:20px;z-index:50;opacity:0;transform:translateY(16px);pointer-events:none;transition:.25s}
-.fab.show{opacity:1;transform:none;pointer-events:auto}
+.team{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:8px}
+.team .card h3{font-size:22px}
+.team p{margin:4px 0;font-size:15.5px}
+.conf{font-size:12.5px;opacity:.55;max-width:640px;margin-top:34px}
 
-/* Aparición al hacer scroll */
-.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
-.reveal.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* ===== Cromo fijo: progreso, menú, contador, flechas, CTA ===== */
+#progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,#fff,#C7C4FF);z-index:80;transition:width .2s ease}
+.chrome-btn{position:fixed;z-index:70;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.85);
+  color:var(--ink)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:999px;
+  padding:10px 16px;font-weight:600;font-size:14px;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.15);border:1px solid rgba(255,255,255,.6)}
+#menuBtn{top:18px;left:18px}
+#talkBtn{top:18px;right:18px}
+.chev{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:70;display:flex;align-items:center;gap:14px;
+  background:rgba(20,18,40,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:999px;padding:8px 10px;color:#fff}
+.chev-btn{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.14);
+  text-decoration:none;color:#fff!important;font-size:20px;transition:.15s}
+.chev-btn:hover{background:rgba(255,255,255,.28)}
+.chev-btn.ghost{opacity:.3;pointer-events:none}
+.counter{font-size:13px;font-variant-numeric:tabular-nums;opacity:.9;min-width:64px;text-align:center}
+
+/* Índice de diapositivas (menú overlay, 100% CSS con checkbox) */
+#menuToggle{position:absolute;opacity:0;pointer-events:none}
+.menu-overlay{position:fixed;inset:0;z-index:90;background:rgba(11,10,26,.94);display:none;flex-direction:column;
+  align-items:center;justify-content:center;gap:6px;padding:24px}
+#menuToggle:checked~.menu-overlay{display:flex}
+.menu-overlay a{color:#fff;text-decoration:none;font-family:"Plus Jakarta Sans";font-size:clamp(20px,3.4vw,30px);
+  font-weight:700;padding:8px 18px;border-radius:12px;opacity:.75;transition:.15s}
+.menu-overlay a:hover{opacity:1;background:rgba(255,255,255,.08)}
+.menu-overlay a span{color:#8B87FF;font-weight:800;margin-right:14px;font-size:.7em}
+label.close-menu{position:absolute;top:18px;right:18px;color:#fff;font-size:28px;cursor:pointer;width:44px;height:44px;
+  display:grid;place-items:center;border-radius:50%}
+label.close-menu:hover{background:rgba(255,255,255,.1)}
 
 @media (max-width:900px){
-  .cover,.persona,.grid3,.flow,.steps,.team,.stats,.card-grid{grid-template-columns:1fr}
+  .slide{padding:calc(64px + 2vh) 6vw 88px}
+  .cover-grid,.grid3,.flow,.persona,.stats,.card-grid,.steps,.team{grid-template-columns:1fr}
   .table-scroll{overflow-x:auto}
+  #talkBtn span.txt{display:none}
 }
 @media print{
-  #progress,.mobile-bar,.overlay,.fab,nav.side,.tabgroup{display:none!important}
-  main{margin-left:0;padding-top:0}
-  section{page-break-inside:avoid;padding:48px 40px}
-  .tab-panel{display:block!important}
-  .reveal{opacity:1!important;transform:none!important;transition:none!important}
+  html{background:#fff}
+  #progress,.chrome-btn,.chev,.menu-overlay,#menuToggle{display:none!important}
+  .deck{height:auto;overflow:visible;scroll-snap-type:none}
+  .slide{min-height:0;height:auto;page-break-inside:avoid;padding:36px 40px;display:block}
+  .content{max-height:none;overflow:visible;opacity:1!important;transform:none!important}
+  .slide::before{display:none}
   .video{display:none}
-  .band,.dark{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  details.detail{display:block!important}
+  details.detail>*{display:block!important}
+  .theme-indigo,.theme-navy,.theme-dark,.theme-light,.theme-tint{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 <style>
@@ -172,99 +214,138 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
 </head>
 <body>
 <div id="progress"></div>
+<input type="checkbox" id="menuToggle">
+<button id="menuBtn" class="chrome-btn" aria-label="Índice de diapositivas">
+  <label for="menuToggle" style="cursor:pointer">☰ Índice</label>
+</button>
+<a id="talkBtn" class="chrome-btn" href="mailto:hugo.rodriguez@kincode.ai?subject=Hablemos%20de%20la%20propuesta%20%E2%80%94%20GoLive">💬 <span class="txt">Hablar con Hugo</span></a>
 
-<div class="mobile-bar">
-  <button id="menuBtn" aria-label="Abrir índice" aria-expanded="false">☰ Índice</button>
-  <b style="font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">GoLive</b>
+<div class="menu-overlay">
+  <label class="close-menu" for="menuToggle">×</label>
+  <a href="#cover"><span>01</span>Portada</a>
+  <a href="#objetivo"><span>02</span>El objetivo</a>
+  <a href="#oportunidad"><span>03</span>La oportunidad</a>
+  <a href="#dolores"><span>04</span>Lo que os está costando</a>
+  <a href="#solucion"><span>05</span>La solución</a>
+  <a href="#accion"><span>06</span>Del insight a la acción</a>
+  <a href="#demo"><span>07</span>La demo</a>
+  <a href="#precio"><span>08</span>Propuesta económica</a>
+  <a href="#pasos"><span>09</span>Próximos pasos</a>
+  <a href="#seguridad"><span>10</span>Seguridad</a>
+  <a href="#integraciones"><span>11</span>Integraciones</a>
+  <a href="#clientes"><span>12</span>Clientes</a>
+  <a href="#contacto"><span>13</span>Contacto</a>
 </div>
-<div class="overlay" id="navOverlay"></div>
 
-<nav class="side" aria-label="Secciones" id="sideNav">
-  <div class="brand">Propuesta de colaboración: GoLive</div>
-  <ol>
-    <li><a href="#portada">Portada</a></li>
-    <li><a href="#objetivo">El objetivo</a></li>
-    <li><a href="#oportunidad">La oportunidad</a></li>
-    <li><a href="#solucion">La solución</a></li>
-    <li><a href="#accion">Del insight a la acción</a></li>
-    <li><a href="#demo">Resumen de la demo</a></li>
-    <li><a href="#propuesta">Propuesta económica</a></li>
-    <li><a href="#pasos">Próximos pasos</a></li>
-    <li><a href="#seguridad">Seguridad</a></li>
-    <li><a href="#contacto">Contacto</a></li>
-  </ol>
-  <div class="author">Kincode<b>Hugo Rodríguez</b></div>
-</nav>
+<main class="deck" id="deck">
 
-<main>
-<section id="portada">
-  <div class="wrap cover">
+<section class="slide theme-dark" id="cover">
+  <div class="content cover-grid">
     <div>
+      <div class="kicker"><span class="idx">01</span><span>Propuesta de colaboración</span></div>
+
       <h1 class="big">Convertir la cultura <em>GoLive</em> en su motor de ejecución</h1>
       <p class="lead">"Feedback continuo, comunicación interna que llega y visibilidad real de la salud de tu empresa"</p>
-      <p class="meta">Integrado en Teams y SharePoint. Con Bizneo vía API.</p>
-      <p class="meta">Preparado para: <b>José Lobera</b>, GoLive · 28/09/2026</p>
+      <p class="meta-line">Integrado en Teams y SharePoint. Con Bizneo vía API.</p>
+      <p class="meta-line">Preparado para <b>José Lobera</b> · GoLive · 28/09/2026</p>
     </div>
 <img src="https://qwilr.imgix.net/66a355392b3a78171bb196d6/images/ecHaTSsTdWOMkl08Ek7H4I1tmQsRfL0jxPLaaA.jpg?auto=format" alt="KAI, el asistente de Kincode">  </div>
+  <div class="chev">
+<span class="chev-btn ghost">‹</span>  <span class="counter" data-counter>01 / 13</span>
+<a href="#objetivo" class="chev-btn" aria-label="Siguiente">›</a></div>
+
 </section>
 
-<section id="objetivo" class="band">
-  <div class="wrap">
-    <div class="eyebrow">Tenemos claro el objetivo</div>
+<section class="slide theme-indigo" id="objetivo">
+  <div class="content">
+    <div class="kicker"><span class="idx">02</span><span>Tenemos claro el objetivo</span></div>
+
     <h2 class="big">Visibilidad real de tus 132 personas, directamente en Teams</h2>
-    <p class="quote reveal">"Vamos a hacer visible lo que hoy no ves: cómo está realmente cada persona de GoLive, qué comunicaciones llegan de verdad y dónde necesitas actuar, sin salir de Teams."</p>
+    <p class="quote-xl" style="margin-top:28px">"Vamos a hacer visible lo que hoy no ves: cómo está realmente cada persona de GoLive, qué comunicaciones llegan de verdad y dónde necesitas actuar, sin salir de Teams."</p>
   </div>
+  <div class="chev">
+<a href="#cover" class="chev-btn" aria-label="Anterior">‹</a>  <span class="counter" data-counter>01 / 13</span>
+<a href="#oportunidad" class="chev-btn" aria-label="Siguiente">›</a></div>
+
 </section>
 
-<section id="oportunidad">
-  <div class="wrap">
-    <div class="eyebrow">La oportunidad</div>
+<section class="slide theme-light" id="oportunidad">
+  <div class="content">
+    <div class="kicker"><span class="idx">03</span><span>La oportunidad</span></div>
+
     <h2 class="big">"Habilidad para escuchar sin depender del email"</h2>
-    <p class="lead" style="color:var(--ink);font-size:21px"><b>Tu realidad:</b> Sin programa activo de clima desde 2022, correo saturado que nadie lee y José gestionando People prácticamente solo.</p>
-    <p><b>Tu desafío:</b> Recoger feedback continuo, que las comunicaciones lleguen de verdad y tener visibilidad de la salud de GoLive, sin añadir carga manual.</p>
-    <div class="grid3 reveal">
-      <div><h3>Tiempo</h3><div class="frase">Cuando lo veis ya ha pasado</div><p>La última encuesta fue en 2022: llevas 3 años sin datos</p></div>
-      <div><h3>Visibilidad real</h3><div class="frase">No hay certeza de lo que pasa</div><p>El correo está saturado: las comunicaciones internas no llegan ni se leen</p></div>
-      <div><h3>Ejecución</h3><div class="frase">Los datos no cambian nada</div><p>Sin plan de acción</p></div>
-    </div>
-    <p class="quote reveal">El problema no es la comunicación interna. Es que no sabes si llega.</p>
+    <p class="lead" style="max-width:64ch"><b>Tu realidad:</b> Sin programa activo de clima desde 2022, correo saturado que nadie lee y José gestionando People prácticamente solo.</p>
+    <p class="lead" style="font-size:18px;max-width:64ch;margin-top:14px"><b>Tu desafío:</b> Recoger feedback continuo, que las comunicaciones lleguen de verdad y tener visibilidad de la salud de GoLive, sin añadir carga manual.</p>
   </div>
+  <div class="chev">
+<a href="#objetivo" class="chev-btn" aria-label="Anterior">‹</a>  <span class="counter" data-counter>01 / 13</span>
+<a href="#dolores" class="chev-btn" aria-label="Siguiente">›</a></div>
+
 </section>
 
-<section id="solucion">
-  <div class="wrap">
-    <div class="eyebrow">La solución (1/2)</div>
+<section class="slide theme-navy" id="dolores">
+  <div class="content">
+    <div class="kicker"><span class="idx">04</span><span>Lo que os está costando hoy</span></div>
+
+    <h2 class="big" style="font-size:clamp(28px,3.6vw,40px)">Qué está pasando. Dónde. Y por qué.</h2>
+    <div class="grid3" style="margin-top:32px">
+      <div class="card"><div class="pain-num">01</div><h3>Tiempo</h3><div class="frase">Cuando lo veis ya ha pasado</div><p style="font-size:15px;opacity:.85">La última encuesta fue en 2022: llevas 3 años sin datos</p></div>
+      <div class="card"><div class="pain-num">02</div><h3>Visibilidad real</h3><div class="frase">No hay certeza de lo que pasa</div><p style="font-size:15px;opacity:.85">El correo está saturado: las comunicaciones internas no llegan ni se leen</p></div>
+      <div class="card"><div class="pain-num">03</div><h3>Ejecución</h3><div class="frase">Los datos no cambian nada</div><p style="font-size:15px;opacity:.85">Sin plan de acción</p></div>
+    </div>
+    <p class="quote-xl" style="margin-top:34px;font-size:clamp(19px,2.2vw,26px)">El problema no es la comunicación interna. Es que no sabes si llega.</p>
+  </div>
+  <div class="chev">
+<a href="#oportunidad" class="chev-btn" aria-label="Anterior">‹</a>  <span class="counter" data-counter>01 / 13</span>
+<a href="#solucion" class="chev-btn" aria-label="Siguiente">›</a></div>
+
+</section>
+
+<section class="slide theme-light" id="solucion">
+  <div class="content">
+    <div class="kicker"><span class="idx">05</span><span>La solución</span></div>
+
     <h2 class="big">Esto es cómo no vais a ciegas</h2>
     <p class="lead">Qué está pasando hoy. Dónde. Y por qué.</p>
-    <div class="grid3 reveal">
-      <div><h3>Tiempo real</h3><div class="frase">"Medición diaria, no trimestral"</div>
+    <div class="grid3">
+      <div class="card"><h3>Tiempo real</h3><div class="frase">"Medición diaria, no trimestral"</div>
         <ul><li>Directamente en Teams (donde ya trabajáis)</li><li>Integrado con SharePoint para autoservicio</li><li>Sin apps nuevas, sin fricción</li></ul></div>
-      <div><h3>Predictibilidad</h3><div class="frase">"Identifica riesgo antes del daño"</div>
+      <div class="card"><h3>Predictibilidad</h3><div class="frase">"Identifica riesgo antes del daño"</div>
         <ul><li>Alertas automáticas</li><li>La IA detecta patrones ocultos</li><li>60 días de anticipación</li></ul></div>
-      <div><h3>Acción</h3><div class="frase">"Convierte datos en decisiones"</div>
+      <div class="card"><h3>Acción</h3><div class="frase">"Convierte datos en decisiones"</div>
         <ul><li>Encuestas ad hoc tras hitos o situaciones concretas</li><li>Segmentación por área, equipo y manager</li><li>Comunicaciones internas que mides y que llegan</li></ul></div>
     </div>
-    <p class="quote reveal">"Escuchamos a tus 132 personas en GoLive directamente en Teams. José tiene visibilidad real de la salud de la empresa sin añadir carga manual."</p>
   </div>
+  <div class="chev">
+<a href="#dolores" class="chev-btn" aria-label="Anterior">‹</a>  <span class="counter" data-counter>01 / 13</span>
+<a href="#accion" class="chev-btn" aria-label="Siguiente">›</a></div>
+
 </section>
 
-<section id="accion">
-  <div class="wrap">
-    <div class="eyebrow">La solución (2/2)</div>
-    <h2 class="big">Del insight a la acción</h2>
+<section class="slide theme-indigo" id="accion">
+  <div class="content">
+    <div class="kicker"><span class="idx">06</span><span>De la señal a la acción</span></div>
+
+    <h2 class="big" style="font-size:clamp(28px,3.6vw,42px)">Del insight a la acción</h2>
     <p class="lead">Cada señal cultural dispara una acción concreta a través de Kincode AI</p>
-    <div class="flow reveal">
+    <div class="flow">
 <div><b>Señal</b><span>El score baja por debajo de la media de la compañía</span></div><div><b>Insight</b><span>Visibilidad de la señal para el equipo de People & Culture</span></div><div><b>Acción</b><span>Propuesta de plan de acción</span></div><div><b>Monitorización</b><span>Una vez aprobado, monitorizamos el plan de acción y los KPIs</span></div>    </div>
+    <p class="quote-xl" style="margin-top:32px;font-size:clamp(19px,2.2vw,25px)">"Escuchamos a tus 132 personas en GoLive directamente en Teams. José tiene visibilidad real de la salud de la empresa sin añadir carga manual."</p>
   </div>
+  <div class="chev">
+<a href="#solucion" class="chev-btn" aria-label="Anterior">‹</a>  <span class="counter" data-counter>01 / 13</span>
+<a href="#demo" class="chev-btn" aria-label="Siguiente">›</a></div>
+
 </section>
 
-<section id="demo" class="dark">
-  <div class="wrap">
-    <div class="eyebrow">Resumen de la demo</div>
-    <h2 class="big">Personajes de la demo</h2>
+<section class="slide theme-navy" id="demo">
+  <div class="content">
+    <div class="kicker"><span class="idx">07</span><span>La demo, en resumen</span></div>
+
+    <h2 class="big" style="font-size:clamp(28px,3.6vw,40px)">Personajes de la demo</h2>
     <p class="hint-click">Toca un personaje para ver su parte de la demo ↓</p>
 
-    <div class="tabgroup" style="margin-top:24px">
+    <div class="tabgroup" style="margin-top:6px">
       <input type="radio" name="persona" id="tab-empleado" class="tab-radio" checked>
       <label for="tab-empleado" class="cast-card"><small>Empleado</small><b>Miguel</b></label>
       <input type="radio" name="persona" id="tab-manager" class="tab-radio" >
@@ -275,56 +356,61 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
       <label for="tab-ceo" class="cast-card"><small>CEO</small><b>Javier Olcina</b></label>
 
       <div class="tab-panel" id="panel-empleado">
-        <div class="eyebrow" style="margin-top:40px">Cómo capturamos el dato</div>
-        <h3 class="big" style="font-size:clamp(28px,3.6vw,42px)">Foto de la cultura en tiempo real</h3>
+        <p class="small" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin:0 0 6px">Cómo capturamos el dato</p>
+        <h3 class="h3" style="font-size:24px">Foto de la cultura en tiempo real</h3>
         <ul class="check"><li>Integración transparente con WhatsApp y Teams</li><li>Sin fricción: respuestas en 1 clic</li><li>Relevancia de los datos: 70-90 % de tasa de respuesta</li></ul>
         <div class="persona">
-          <div class="who"><div class="av">M</div><span>Empleado</span><br><small>Miguel</small></div>
+          <div class="who"><div class="av">M</div><span class="small" style="opacity:1">Empleado</span><br><small>Miguel</small></div>
 <div><div class="video"><iframe src="https://www.loom.com/embed/ca3dac93b0cf48c3a4f57d752d2364cb" title="Demo: Foto de la cultura en tiempo real" loading="lazy" allowfullscreen></iframe></div>
-          <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/ca3dac93b0cf48c3a4f57d752d2364cb" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
+          <p style="font-size:14px;margin-top:8px"><a href="https://www.loom.com/share/ca3dac93b0cf48c3a4f57d752d2364cb" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
       </div>
       <div class="tab-panel" id="panel-manager">
-        <div class="eyebrow" style="margin-top:40px">Cómo aprovechamos los datos</div>
-        <h3 class="big" style="font-size:clamp(28px,3.6vw,42px)">Equipar a los managers para el cambio</h3>
+        <p class="small" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin:0 0 6px">Cómo aprovechamos los datos</p>
+        <h3 class="h3" style="font-size:24px">Equipar a los managers para el cambio</h3>
         <ul class="check"><li>Entender el sentimiento del equipo</li><li>Guiar a los miembros del equipo</li><li>Mejorar las habilidades de los managers</li></ul>
         <div class="persona">
-          <div class="who"><div class="av">H</div><span>Manager</span><br><small>Hugo</small></div>
+          <div class="who"><div class="av">H</div><span class="small" style="opacity:1">Manager</span><br><small>Hugo</small></div>
 <div><div class="video"><iframe src="https://www.loom.com/embed/871bdfd62fd048f0a953173e510f1790" title="Demo: Equipar a los managers para el cambio" loading="lazy" allowfullscreen></iframe></div>
-          <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/871bdfd62fd048f0a953173e510f1790" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
+          <p style="font-size:14px;margin-top:8px"><a href="https://www.loom.com/share/871bdfd62fd048f0a953173e510f1790" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
       </div>
       <div class="tab-panel" id="panel-people">
-        <div class="eyebrow" style="margin-top:40px">Cómo accionamos los datos</div>
-        <h3 class="big" style="font-size:clamp(28px,3.6vw,42px)">Alinear a los equipos en el cambio</h3>
+        <p class="small" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin:0 0 6px">Cómo accionamos los datos</p>
+        <h3 class="h3" style="font-size:24px">Alinear a los equipos en el cambio</h3>
         <ul class="check"><li>KAI: un empleado de IA pendiente del equipo 24/7</li><li>Planes de acción propuestos de forma recurrente</li></ul>
         <div class="persona">
-          <div class="who"><div class="av">J</div><span>Chief People Officer</span><br><small>José Lobera</small></div>
+          <div class="who"><div class="av">J</div><span class="small" style="opacity:1">Chief People Officer</span><br><small>José Lobera</small></div>
 <div><div class="video"><iframe src="https://www.loom.com/embed/b16ab8d65d554f58bf2ae93dca09e33a" title="Demo: Alinear a los equipos en el cambio" loading="lazy" allowfullscreen></iframe></div>
-          <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/b16ab8d65d554f58bf2ae93dca09e33a" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
+          <p style="font-size:14px;margin-top:8px"><a href="https://www.loom.com/share/b16ab8d65d554f58bf2ae93dca09e33a" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
       </div>
       <div class="tab-panel" id="panel-ceo">
-        <div class="eyebrow" style="margin-top:40px">Los resultados que obtenemos</div>
-        <h3 class="big" style="font-size:clamp(28px,3.6vw,42px)">Mejora de los resultados de negocio</h3>
+        <p class="small" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin:0 0 6px">Los resultados que obtenemos</p>
+        <h3 class="h3" style="font-size:24px">Mejora de los resultados de negocio</h3>
         <ul class="check"><li>Cultura organizativa alineada</li><li>Mejora de la satisfacción y el compromiso</li></ul>
         <div class="persona">
-          <div class="who"><div class="av">J</div><span>CEO</span><br><small>Javier Olcina</small></div>
+          <div class="who"><div class="av">J</div><span class="small" style="opacity:1">CEO</span><br><small>Javier Olcina</small></div>
 <div><div class="video"><iframe src="https://www.loom.com/embed/75cfbd417c274c2f8b42e19246a60692" title="Demo: Mejora de los resultados de negocio" loading="lazy" allowfullscreen></iframe></div>
-          <p style="font-size:15px;margin-top:10px"><a href="https://www.loom.com/share/75cfbd417c274c2f8b42e19246a60692" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
+          <p style="font-size:14px;margin-top:8px"><a href="https://www.loom.com/share/75cfbd417c274c2f8b42e19246a60692" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
       </div>
     </div>
   </div>
+  <div class="chev">
+<a href="#accion" class="chev-btn" aria-label="Anterior">‹</a>  <span class="counter" data-counter>01 / 13</span>
+<a href="#precio" class="chev-btn" aria-label="Siguiente">›</a></div>
+
 </section>
 
-<section id="propuesta">
-  <div class="wrap">
-    <div class="eyebrow">Propuesta económica</div>
-    <h2 class="big">GoLive</h2>
-    <p class="meta"><b>132 empleados</b> · España · Teams + SharePoint</p>
+<section class="slide theme-light" id="precio">
+  <div class="content">
+    <div class="kicker"><span class="idx">08</span><span>Propuesta económica</span></div>
 
-    <div class="tabgroup" style="margin-top:32px">
+    <h2 class="big">GoLive</h2>
+    <p class="lead" style="font-size:18px;margin-top:4px"><b>132 empleados</b> · España · Teams + SharePoint</p>
+
+    <div class="tabgroup" style="margin-top:22px">
       <input type="radio" name="modo" id="modo-piloto" class="tab-radio" checked>
-      <label for="modo-piloto" class="tab-btn">Opción 1 · Piloto</label>
+      <label for="modo-piloto" class="tab-btn sm">Opción 1 · Piloto</label>
       <input type="radio" name="modo" id="modo-full" class="tab-radio">
-      <label for="modo-full" class="tab-btn">Opción 2 · Implementación completa</label>
+      <label for="modo-full" class="tab-btn sm">Opción 2 · Implementación completa</label>
 
       <div class="tab-panel" id="panel-piloto">
         <div class="card-grid">
@@ -336,169 +422,185 @@ footer{padding:28px 8vw;color:var(--muted);font-size:13px}
         <a class="cta" href="mailto:hugo.rodriguez@kincode.ai?subject=Quiero%20empezar%20por%20el%20piloto%20%E2%80%94%20GoLive">Empezar por el piloto →</a>
       </div>
 
-      <div class="tab-panel" id="panel-full">
-                <div class="opt">
-          <h3>Opción 2: Implementación completa <span class="tag">-28 %</span></h3>
+      <div class="tab-panel" id="panel-full"><h3 class="h3">Opción 2 · Implementación completa <span class="tag">-28 %</span></h3>
+<div class="tabgroup" style="margin-top:4px">
+  <input type="radio" name="cond" id="cond-base" class="tab-radio" checked>
+  <label for="cond-base" class="tab-btn sm">Precio final</label>
+  <input type="radio" name="cond" id="cond-extra1" class="tab-radio">
+  <label for="cond-extra1" class="tab-btn sm">-10% firma anual</label>
+  <input type="radio" name="cond" id="cond-extra2" class="tab-radio">
+  <label for="cond-extra2" class="tab-btn sm">-20% firma anual + pago anticipado</label>
 
-          <div class="tabgroup" style="margin-top:8px">
-            <input type="radio" name="cond" id="cond-base" class="tab-radio" checked>
-            <label for="cond-base" class="tab-btn">Precio final</label>
-            <input type="radio" name="cond" id="cond-extra1" class="tab-radio">
-            <label for="cond-extra1" class="tab-btn">-10% firma anual</label>
-            <input type="radio" name="cond" id="cond-extra2" class="tab-radio">
-            <label for="cond-extra2" class="tab-btn">-20% firma anual + pago anticipado</label>
+  <div class="tab-panel" id="cond-panel-base">
+    <div class="stats">
+      <div class="stat"><b>3,60 €</b><span>€/emp/mes</span></div>
+      <div class="stat"><b>475,20 €</b><span>Total mensual</span></div>
+      <div class="stat"><b>6.702 €</b><span>Total año 1</span></div>
+      <div class="stat hi"><b>-25 %</b><span>Ahorro vs. tarifa normal</span></div>
+    </div>
+  </div>
+  <div class="tab-panel" id="cond-panel-extra1">
+    <div class="stats">
+      <div class="stat"><b>3,24 €</b><span>€/emp/mes</span></div>
+      <div class="stat"><b>427,68 €</b><span>Total mensual</span></div>
+      <div class="stat"><b>6.132 €</b><span>Total año 1</span></div>
+      <div class="stat hi"><b>-31 %</b><span>Ahorro vs. tarifa normal</span></div>
+    </div>
+  </div>
+  <div class="tab-panel" id="cond-panel-extra2">
+    <div class="stats">
+      <div class="stat"><b>2,88 €</b><span>€/emp/mes</span></div>
+      <div class="stat"><b>380,16 €</b><span>Total mensual</span></div>
+      <div class="stat"><b>5.562 €</b><span>Total año 1</span></div>
+      <div class="stat hi"><b>-38 %</b><span>Ahorro vs. tarifa normal</span></div>
+    </div>
+  </div>
+</div>
 
-            <div class="tab-panel" id="cond-panel-base">
-              <div class="stats">
-                <div class="stat"><b>3,60 €</b><span>€/emp/mes</span></div>
-                <div class="stat"><b>475,20 €</b><span>Total mensual</span></div>
-                <div class="stat"><b>6.702 €</b><span>Total año 1</span></div>
-                <div class="stat"><b>-25 %</b><span>Ahorro vs. tarifa normal</span></div>
-              </div>
-            </div>
-            <div class="tab-panel" id="cond-panel-extra1">
-              <div class="stats">
-                <div class="stat"><b>3,24 €</b><span>€/emp/mes</span></div>
-                <div class="stat"><b>427,68 €</b><span>Total mensual</span></div>
-                <div class="stat"><b>6.132 €</b><span>Total año 1</span></div>
-                <div class="stat"><b>-31 %</b><span>Ahorro vs. tarifa normal</span></div>
-              </div>
-            </div>
-            <div class="tab-panel" id="cond-panel-extra2">
-              <div class="stats">
-                <div class="stat"><b>2,88 €</b><span>€/emp/mes</span></div>
-                <div class="stat"><b>380,16 €</b><span>Total mensual</span></div>
-                <div class="stat"><b>5.562 €</b><span>Total año 1</span></div>
-                <div class="stat"><b>-38 %</b><span>Ahorro vs. tarifa normal</span></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="table-scroll"><table>
-            <tr><th>Concepto</th><th class="num">Precio normal</th><th class="num">Precio final</th></tr>
-            <tr><td>Integración (pago único)</td><td class="num">1.000 €</td><td class="num">1.000 €</td></tr>
-            <tr><td>Precio/emp/mes</td><td class="num">5 €</td><td class="num"><b>3,60 €</b></td></tr>
-            <tr><td>Total mensual</td><td class="num">660 €</td><td class="num">475,20 €</td></tr>
-            <tr><td>Total año 1</td><td class="num">8.920 €</td><td class="num"><b>6.702 €</b></td></tr>
-            <tr><td>Ahorro frente a la tarifa normal</td><td class="num">—</td><td class="num">-2.218 € (-25 %)</td></tr>
-          </table></div>
-
-          <div class="opt">
-            <h3 style="font-size:19px">Descuentos adicionales, en detalle</h3>
-            <div class="table-scroll"><table>
-              <tr><th>Condición</th><th class="num">€/emp/mes</th><th class="num">Total mensual</th><th class="num">Total año 1</th><th class="num">Ahorro total</th></tr>
-              <tr><td>-10% firma anual</td><td class="num">3,24 €</td><td class="num">427,68 €</td><td class="num">6.132 €</td><td class="num">-2.788 € (-31 %)</td></tr>
-              <tr class="hi"><td>-20% firma anual + pago anticipado</td><td class="num">2,88 €</td><td class="num">380,16 €</td><td class="num">5.562 €</td><td class="num">-3.358 € (-38 %)</td></tr>
-            </table></div>
-          </div>
-        </div>
-
-      </div>
+<details class="detail">
+  <summary>Ver el desglose completo</summary>
+  <div class="table-scroll"><table>
+    <tr><th>Concepto</th><th class="num">Precio normal</th><th class="num">Precio final</th></tr>
+    <tr><td>Integración (pago único)</td><td class="num">1.000 €</td><td class="num">1.000 €</td></tr>
+    <tr><td>Precio/emp/mes</td><td class="num">5 €</td><td class="num"><b>3,60 €</b></td></tr>
+    <tr><td>Total mensual</td><td class="num">660 €</td><td class="num">475,20 €</td></tr>
+    <tr><td>Total año 1</td><td class="num">8.920 €</td><td class="num"><b>6.702 €</b></td></tr>
+    <tr><td>Ahorro frente a la tarifa normal</td><td class="num">—</td><td class="num">-2.218 € (-25 %)</td></tr>
+    <tr><td>-10% firma anual</td><td class="num">—</td><td class="num">3,24 €/emp/mes · 6.132 € año 1 (-31 %)</td></tr>
+    <tr class="hi"><td>-20% firma anual + pago anticipado</td><td class="num">—</td><td class="num">2,88 €/emp/mes · 5.562 € año 1 (-38 %)</td></tr>
+  </table></div>
+</details>
+</div>
     </div>
 
-    <div class="callout reveal">
+    <div class="callout">
       <b>Ruta sugerida</b>
-      <p>Piloto de 36-40 personas (1-2 meses) → managers prueban y validan → rollout completo en enero de 2027 con los 132 empleados.</p>
-      <p style="margin-bottom:0">Con la mejor condición: <b>2,88 €/emp/mes</b>, menos de un café por persona al mes.</p>
+      <p style="margin:6px 0">Piloto de 36-40 personas (1-2 meses) → managers prueban y validan → rollout completo en enero de 2027 con los 132 empleados.</p>
+      <p style="margin:0">Con la mejor condición: <b>2,88 €/emp/mes</b> — menos de un café por persona al mes.</p>
       <a class="cta" href="mailto:hugo.rodriguez@kincode.ai?subject=Adelante%20con%20la%20propuesta%20%E2%80%94%20GoLive">Reservar mi plan →</a>
     </div>
   </div>
+  <div class="chev">
+<a href="#demo" class="chev-btn" aria-label="Anterior">‹</a>  <span class="counter" data-counter>01 / 13</span>
+<a href="#pasos" class="chev-btn" aria-label="Siguiente">›</a></div>
+
 </section>
 
-<section id="pasos" class="dark">
-  <div class="wrap">
-    <div class="eyebrow">Próximos pasos</div>
-    <h2 class="big">Próximos pasos: 60 días de visibilidad real</h2>
-    <ol class="steps reveal"><li>Piloto con un grupo reducido</li><li>Legal (GDPR y contrato)</li><li>Ciberseguridad</li><li>Sesión de alineamiento cultural</li><li>Instalación del agente en Teams y WhatsApp</li><li>Integración con el HRIS (Bizneo)</li></ol>
-    <a class="cta ghost" href="mailto:hugo.rodriguez@kincode.ai?subject=Siguiente%20paso%20%E2%80%94%20GoLive">Agendar el siguiente paso →</a>
+<section class="slide theme-navy" id="pasos">
+  <div class="content">
+    <div class="kicker"><span class="idx">09</span><span>Próximos pasos</span></div>
+
+    <h2 class="big" style="font-size:clamp(28px,3.6vw,40px)">Próximos pasos: 60 días de visibilidad real</h2>
+    <ol class="steps"><li>Piloto con un grupo reducido</li><li>Legal (GDPR y contrato)</li><li>Ciberseguridad</li><li>Sesión de alineamiento cultural</li><li>Instalación del agente en Teams y WhatsApp</li><li>Integración con el HRIS (Bizneo)</li></ol>
+    <a class="cta" href="mailto:hugo.rodriguez@kincode.ai?subject=Siguiente%20paso%20%E2%80%94%20GoLive">Agendar el siguiente paso →</a>
   </div>
+  <div class="chev">
+<a href="#precio" class="chev-btn" aria-label="Anterior">‹</a>  <span class="counter" data-counter>01 / 13</span>
+<a href="#seguridad" class="chev-btn" aria-label="Siguiente">›</a></div>
+
 </section>
 
-<section id="seguridad">
-  <div class="wrap">
-    <div class="eyebrow">Cumplimiento y seguridad</div>
-    <h2 class="big" style="font-size:clamp(32px,4.4vw,52px)">Nuestro stack tecnológico cumple con el estándar ISO 27001</h2>
+<section class="slide theme-light" id="seguridad">
+  <div class="content">
+    <div class="kicker"><span class="idx">10</span><span>Cumplimiento y seguridad</span></div>
+
+    <h2 class="big" style="font-size:clamp(28px,3.6vw,40px)">Nuestro stack tecnológico cumple con el estándar ISO 27001</h2>
     <ul class="check"><li>Auditorías anuales de Kincode por nuestro partner IronWolf Security, según los estándares OWASP</li></ul>
     <div class="table-scroll"><table>
       <tr><th>Stack tecnológico</th><th>Documentación</th></tr>
 <tr><td>Amazon Web Services (AWS)</td><td><a href="https://aws.amazon.com/es/security/" target="_blank" rel="noopener">https://aws.amazon.com/es/security/</a></td></tr><tr><td>Heroku (basado en AWS)</td><td><a href="https://www.heroku.com/compliance" target="_blank" rel="noopener">https://www.heroku.com/compliance</a></td></tr><tr><td>MongoDB (basado en AWS)</td><td><a href="https://www.mongodb.com/trust" target="_blank" rel="noopener">https://www.mongodb.com/trust</a></td></tr><tr><td>GitHub</td><td><a href="https://github.com/security" target="_blank" rel="noopener">https://github.com/security</a></td></tr>    </table></div>
-    <h3 style="margin-top:56px;font-size:28px">Conecta todos tus datos y aplicaciones en un mismo lugar</h3>
-    <p>Ahorra tiempo y esfuerzo conectando Kincode con otras aplicaciones. Seguimos añadiendo más, y si no encuentras tu aplicación, podemos integrarla vía API.</p>
   </div>
+  <div class="chev">
+<a href="#pasos" class="chev-btn" aria-label="Anterior">‹</a>  <span class="counter" data-counter>01 / 13</span>
+<a href="#integraciones" class="chev-btn" aria-label="Siguiente">›</a></div>
+
 </section>
 
-<section class="band">
-  <div class="wrap">
-    <h2 class="big" style="font-size:clamp(32px,4.4vw,52px)">No estás solo en la transformación</h2>
-    <div class="logos reveal"><span>Danone</span><span>Qaracter</span><span>Taxdown</span><span>PropHero</span><span>Inversimply</span><span>Namencis Education</span></div>
+<section class="slide theme-indigo" id="integraciones">
+  <div class="content">
+    <div class="kicker"><span class="idx">11</span><span>Integraciones</span></div>
+
+    <h2 class="big" style="font-size:clamp(28px,3.6vw,42px)">Conecta todos tus datos y aplicaciones en un mismo lugar</h2>
+    <p class="lead">Ahorra tiempo y esfuerzo conectando Kincode con otras aplicaciones. Seguimos añadiendo más, y si no encuentras tu aplicación, podemos integrarla vía API.</p>
   </div>
+  <div class="chev">
+<a href="#seguridad" class="chev-btn" aria-label="Anterior">‹</a>  <span class="counter" data-counter>01 / 13</span>
+<a href="#clientes" class="chev-btn" aria-label="Siguiente">›</a></div>
+
 </section>
 
-<section id="contacto" class="dark">
-  <div class="wrap">
-    <div class="eyebrow">Contacto</div>
-    <div class="team reveal">
-      <div><h3>Miguel Álvarez</h3>
+<section class="slide theme-dark" id="clientes">
+  <div class="content">
+    <div class="kicker"><span class="idx">12</span><span>No estás solo en la transformación</span></div>
+
+    <h2 class="big" style="font-size:clamp(28px,3.6vw,46px)">Ya confían en Kincode</h2>
+    <div class="pills"><span>Danone</span><span>Qaracter</span><span>Taxdown</span><span>PropHero</span><span>Inversimply</span><span>Namencis Education</span></div>
+  </div>
+  <div class="chev">
+<a href="#integraciones" class="chev-btn" aria-label="Anterior">‹</a>  <span class="counter" data-counter>01 / 13</span>
+<a href="#contacto" class="chev-btn" aria-label="Siguiente">›</a></div>
+
+</section>
+
+<section class="slide theme-navy" id="contacto">
+  <div class="content">
+    <div class="kicker"><span class="idx">13</span><span>Hablemos</span></div>
+
+    <h2 class="big" style="font-size:clamp(28px,3.6vw,40px)">Contacto</h2>
+    <div class="team">
+      <div class="card"><h3>Miguel Álvarez</h3>
         <p>📞 (+34) 677 970 653</p>
         <p>📧 <a href="mailto:miguel@kincode.ai">miguel@kincode.ai</a></p>
         <p>LinkedIn: <a href="https://www.linkedin.com/in/miguelalvareztamariz" target="_blank" rel="noopener">@miguelalvareztamariz</a></p></div>
-      <div><h3>Hugo Rodríguez</h3>
+      <div class="card"><h3>Hugo Rodríguez</h3>
         <p>📞 (+34) 611 41 68 51</p>
         <p>📧 <a href="mailto:hugo.rodriguez@kincode.ai">hugo.rodriguez@kincode.ai</a></p>
         <p>LinkedIn: <a href="https://www.linkedin.com/in/hugo-rodriguez" target="_blank" rel="noopener">@hugo-rodriguez</a></p></div>
     </div>
+    <p class="conf">Este documento contiene propiedad intelectual confidencial, conocimientos técnicos y otra información propiedad de Kincode. El acceso a esta información y su uso están estrictamente limitados y controlados por Kincode. El destinatario no puede copiar, distribuir ni divulgar este documento, incluidos los resúmenes de su contenido, a terceros. · © 2026 Kincode</p>
   </div>
+  <div class="chev">
+<a href="#clientes" class="chev-btn" aria-label="Anterior">‹</a>  <span class="counter" data-counter>01 / 13</span>
+<span class="chev-btn ghost">›</span></div>
+
 </section>
 
-<section>
-  <div class="wrap">
-    <div class="eyebrow">Confidencial</div>
-    <p class="conf">Este documento contiene propiedad intelectual confidencial, conocimientos técnicos y otra información propiedad de Kincode. El acceso a esta información y su uso están estrictamente limitados y controlados por Kincode. El destinatario no puede copiar, distribuir ni divulgar este documento, incluidos los resúmenes de su contenido, a terceros.</p>
-  </div>
-</section>
-<footer>© 2026 Kincode. Todos los derechos reservados.</footer>
 </main>
 
-<a class="fab cta" id="fab" href="mailto:hugo.rodriguez@kincode.ai?subject=Hablemos%20de%20la%20propuesta%20%E2%80%94%20GoLive">💬 Hablar con Hugo</a>
-
 <script>
-// Resalta la sección visible en la navegación lateral
-const links=[...document.querySelectorAll('nav.side a')];
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-40% 0px -55% 0px'});
-document.querySelectorAll('section[id]').forEach(s=>io.observe(s));
-
-// Barra de progreso de lectura
+const deck=document.getElementById('deck');
+const slides=[...document.querySelectorAll('.slide')];
 const bar=document.getElementById('progress');
-addEventListener('scroll',()=>{
-  const h=document.documentElement;
-  const pct=(h.scrollTop)/((h.scrollHeight)-h.clientHeight||1)*100;
-  bar.style.width=pct+'%';
-},{passive:true});
+const counters=[...document.querySelectorAll('[data-counter]')];
+const total=slides.length;
 
-// Cajón de navegación en móvil
-const nav=document.getElementById('sideNav'), overlay=document.getElementById('navOverlay'), menuBtn=document.getElementById('menuBtn');
-function setNav(open){
-  nav.classList.toggle('open',open); overlay.classList.toggle('show',open);
-  menuBtn && menuBtn.setAttribute('aria-expanded',open);
+function setActive(i){
+  slides.forEach((s,idx)=>s.classList.toggle('active',idx===i));
+  bar.style.width=((i+1)/total*100)+'%';
+  const label=String(i+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');
+  counters.forEach(c=>c.textContent=label);
 }
-menuBtn && menuBtn.addEventListener('click',()=>setNav(!nav.classList.contains('open')));
-overlay.addEventListener('click',()=>setNav(false));
-links.forEach(l=>l.addEventListener('click',()=>setNav(false)));
 
-// Aparición suave al hacer scroll
-const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-if(!reduced && 'IntersectionObserver' in window){
-  const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}}),{threshold:.15});
-  document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+if('IntersectionObserver' in window){
+  const io=new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ setActive(slides.indexOf(e.target)); } });
+  },{root:deck,threshold:.55});
+  slides.forEach(s=>io.observe(s));
 }else{
-  document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+  slides.forEach(s=>s.classList.add('active'));
+  setActive(0);
 }
 
-// Botón flotante: aparece al salir de la portada
-const fab=document.getElementById('fab'), hero=document.getElementById('portada');
-if(hero){
-  new IntersectionObserver(es=>es.forEach(e=>fab.classList.toggle('show',!e.isIntersecting)),{rootMargin:'-10% 0px 0px 0px'}).observe(hero);
-}
+// Navegación por teclado (además del scroll, el swipe y los enlaces ‹ › que ya funcionan sin JS)
+addEventListener('keydown',e=>{
+  if(document.getElementById('menuToggle').checked) return;
+  const cur=slides.findIndex(s=>s.classList.contains('active'));
+  if(['ArrowDown','ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();const t=slides[Math.min(cur+1,total-1)];t&&t.scrollIntoView({behavior:'smooth'});}
+  if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();const t=slides[Math.max(cur-1,0)];t&&t.scrollIntoView({behavior:'smooth'});}
+});
+
+// El menú-índice cierra al elegir una diapositiva
+document.querySelectorAll('.menu-overlay a').forEach(a=>a.addEventListener('click',()=>{document.getElementById('menuToggle').checked=false;}));
 </script>
 </body>
 </html>

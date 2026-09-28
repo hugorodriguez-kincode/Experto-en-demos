@@ -28,21 +28,24 @@ description: Genera la propuesta web interactiva de Kincode (resumen de la demo 
 
 ## Cómo es la plantilla (herramientas/propuesta/plantilla.html.j2)
 
-No es un scroll estático como Qwilr: es interactiva, sin necesidad de JavaScript para
-lo esencial (funciona igual si el cliente lo abre o lo imprime a PDF):
+Ya no es un scroll de documento como Qwilr: es un **deck de diapositivas a pantalla
+completa** (13 diapositivas fijas, una idea por pantalla, con scroll-snap), pensado para
+sentirse como un producto propio y no como un contrato largo:
 
-- **Personajes de la demo**: se seleccionan con pestañas (Empleado / Manager / People / CEO)
-  en vez de cuatro secciones seguidas; cada una enseña sus puntos y su vídeo.
-- **Propuesta económica**: pestañas Piloto / Implementación completa, y dentro de
-  implementación, pestañas por condición comercial (precio final, -10 % firma anual,
-  -20 % firma anual + pago anticipado) con tarjetas de cifras que cambian al instante.
-  Debajo se mantiene la tabla completa de referencia.
-- Barra de progreso de lectura, menú lateral que se resalta solo, botón flotante
-  "Hablar con {{autor}}" con mailto pre-rellenado, y CTAs en precios y próximos pasos.
-- Menú en cajón (☰) en móvil.
-- Al imprimir/exportar a PDF se muestran TODAS las pestañas a la vez (nadie se queda
-  contenido oculto en el PDF que se envía por email).
+- Se navega con scroll/swipe (una diapositiva "engancha" en cada pantalla), con las
+  flechas ‹ › de abajo, con las flechas del teclado o con el índice (☰ arriba a la
+  izquierda) para saltar directo a una sección.
+- Fondos de color con degradados (indigo/navy/dark) que rotan diapositiva a diapositiva
+  para dar ritmo, en vez de un fondo blanco continuo.
+- **Personajes de la demo** y **Piloto/Implementación/condición comercial** se navegan
+  con pestañas dentro de su diapositiva (100 % CSS, sin depender de JavaScript).
+- Contador "03 / 13", barra de progreso arriba y botón "Hablar con {{autor}}" siempre visibles.
+- Al imprimir/exportar a PDF, las diapositivas pasan a maquetarse en vertical (una tras
+  otra) y se fuerza a mostrar todo el contenido de las pestañas, para que no falte nada
+  en el PDF que se envía por email.
 
-Si el cliente pide cambiar el diseño (colores, orden de secciones, más o menos
-interactividad), edita `plantilla.html.j2`; no hace falta tocar `generar.py` salvo que
-cambie qué datos se calculan.
+Las 13 diapositivas están para razones de estructura (portada, objetivo, oportunidad,
+los 3 dolores, solución, insight→acción, demo, propuesta económica, próximos pasos,
+seguridad, integraciones, clientes, contacto). Si el cliente pide cambiar el diseño
+(colores, orden, más o menos diapositivas), edita `plantilla.html.j2`; no hace falta
+tocar `generar.py` salvo que cambie qué datos se calculan.
