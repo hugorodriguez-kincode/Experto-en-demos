@@ -237,6 +237,22 @@ tr.hi td{background:rgba(255,255,255,.1);font-weight:700}
 
 .pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
 .pills span{border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:9px 18px;font-weight:600;font-size:14.5px}
+.logo-wall{display:flex;flex-wrap:wrap;gap:16px;margin-top:32px}
+.logo-card{flex:1 1 150px;max-width:190px;height:96px;background:#fff;border-radius:16px;display:flex;
+  align-items:center;justify-content:center;padding:18px;box-shadow:0 10px 24px rgba(0,0,0,.18)}
+.logo-card img{max-width:100%;max-height:100%;object-fit:contain}
+.logo-card.fallback{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3)}
+.logo-card.fallback span{font-weight:600;font-size:14.5px;color:#fff}
+.logo-card.oscuro{background:#15123B}
+
+.awards{display:flex;flex-wrap:wrap;gap:16px;margin-top:8px}
+.award-card{flex:1 1 320px;min-height:170px;border-radius:20px;background-size:cover;background-position:center 20%;
+  display:flex;flex-direction:column;justify-content:flex-end;padding:22px;color:#fff;box-shadow:0 16px 40px rgba(0,0,0,.4)}
+.award-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);border-radius:999px;padding:5px 14px;font-size:12.5px;font-weight:700;
+  margin-bottom:10px;width:fit-content}
+.award-card b{font-family:"Plus Jakarta Sans";font-size:22px;display:block;margin-bottom:4px}
+.award-card .detalle{font-size:14px;opacity:.9}
 
 .team{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:8px}
 .team .card h3{font-size:22px}
@@ -529,7 +545,25 @@ label.close-menu:hover{background:rgba(255,255,255,.1)}
   <div class="content">
     {{ kicker('No estás solo en la transformación') }}
     <h2 class="big" style="font-size:clamp(28px,3.6vw,46px)">Ya confían en Kincode</h2>
-    <div class="pills">{% for l in d.clientes_logos %}<span>{{ l }}</span>{% endfor %}</div>
+
+    {% if d.premios %}
+    <div class="awards">
+      {% for pr in d.premios %}
+      <div class="award-card" style="background-image:linear-gradient(0deg,rgba(11,10,26,.9),rgba(11,10,26,.25)){% if pr.imagen %},url('{{ pr.imagen }}'){% endif %}">
+        <span class="award-tag">🏆 Premio</span>
+        <b>{{ pr.nombre }}</b>
+        <span class="detalle">{{ pr.detalle }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="logo-wall">
+      {% for l in d.clientes_logos %}
+      {% if l.logo %}<div class="logo-card{% if l.fondo == 'oscuro' %} oscuro{% endif %}"><img src="{{ l.logo }}" alt="{{ l.nombre }}"></div>
+      {% else %}<div class="logo-card fallback"><span>{{ l.nombre }}</span></div>{% endif %}
+      {% endfor %}
+    </div>
   </div>
   {{ chevrons('integraciones', 'contacto') }}
 </section>

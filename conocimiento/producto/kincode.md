@@ -49,7 +49,16 @@ integración, "podemos integrarla con API". [PENDIENTE: lista completa de integr
 
 ## Logos de clientes ("No estás solo en la transformación")
 Danone, Qaracter, Taxdown, PropHero, Inversimply, Namencis Education.
-[PENDIENTE: lista completa y cuáles se pueden citar con métricas]
+Logos reales en `conocimiento/marca/logos-clientes/` (ver `herramientas/propuesta/base.yaml`
+para la lista con sus rutas; Namencis lleva fondo oscuro porque su logo es blanco).
+[PENDIENTE: confirmar que siguen siendo clientes vigentes y cuáles se pueden citar con métricas]
+
+## Premios y reconocimientos
+- **HR Innovation Summit 2025**: ganadoras en la categoría "Tendencia y Futuro" de la
+  4ª edición de la HR Startup Competition (organizada por RRHHDigital y AEDRH), 8 de
+  octubre de 2025. Imagen en `conocimiento/marca/premios/hr-innovation-summit-2025.jpg`
+  (foto editorial del evento, no es una foto específica del equipo de Kincode recogiendo
+  el premio). Fuente: [RRHHDigital](https://www.rrhhdigital.com/secciones/eventos-rrhhdigital/781883/kincode-ai-wiselook-y-que-cocine-peter-ganadoras-de-la-cuarta-edicion-de-la-hr-startup-competition/).
 
 ## Próximos pasos tipo tras la propuesta
 Piloto con un grupo reducido → Legal (GDPR y contrato) → Ciberseguridad →

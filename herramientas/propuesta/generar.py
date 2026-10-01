@@ -71,15 +71,16 @@ def calcular_precios(n, pol, extra):
     }
 
 
-def foto_a_data_uri(foto, carpeta_yaml):
-    """Si `foto` es un archivo local, lo incrusta como data: URI (para que el
-    HTML siga siendo un único archivo portable). Si ya es una URL http(s) o
-    un data:, se deja tal cual."""
-    if not foto or foto.startswith(("http://", "https://", "data:")):
-        return foto
-    ruta = (carpeta_yaml / foto).resolve()
+def archivo_a_data_uri(ruta_imagen, carpeta_base, aviso_si_falta=None):
+    """Si `ruta_imagen` es un archivo local (relativo a `carpeta_base`), lo
+    incrusta como data: URI para que el HTML siga siendo un único archivo
+    portable. Si ya es una URL http(s) o un data:, se deja tal cual."""
+    if not ruta_imagen or ruta_imagen.startswith(("http://", "https://", "data:")):
+        return ruta_imagen
+    ruta = (carpeta_base / ruta_imagen).resolve()
     if not ruta.is_file():
-        print(f"  ⚠ no se encuentra la foto '{foto}' (se esperaba en {ruta}); se usarán iniciales")
+        if aviso_si_falta:
+            print(f"  ⚠ {aviso_si_falta.format(ruta_imagen=ruta_imagen, ruta=ruta)}")
         return None
     mime = mimetypes.guess_type(ruta.name)[0] or "image/jpeg"
     b64 = base64.b64encode(ruta.read_bytes()).decode()
@@ -97,8 +98,39 @@ def normalizar_personajes(datos, carpeta_yaml):
             nombre, foto = valor.get("nombre"), valor.get("foto")
         else:
             nombre, foto = valor, None
-        normalizados[clave] = {"nombre": nombre, "foto": foto_a_data_uri(foto, carpeta_yaml)}
+        foto = archivo_a_data_uri(
+            foto, carpeta_yaml,
+            "no se encuentra la foto '{ruta_imagen}' (se esperaba en {ruta}); se usarán iniciales")
+        normalizados[clave] = {"nombre": nombre, "foto": foto}
     datos["demo"]["personajes"] = normalizados
+
+
+def normalizar_logos_clientes(datos):
+    """Acepta tanto `Danone` (solo texto, pastilla) como
+    `{nombre: Danone, logo: logos-clientes/danone.jpeg}` (con logo real).
+    Las rutas de logo son relativas a conocimiento/marca/ (se comparten entre
+    todas las propuestas, no van dentro de demos/<carpeta>/)."""
+    base_logos = RAIZ / "conocimiento" / "marca"
+    normalizados = []
+    for valor in datos.get("clientes_logos", []) or []:
+        if isinstance(valor, dict):
+            nombre, logo, fondo = valor.get("nombre"), valor.get("logo"), valor.get("fondo")
+        else:
+            nombre, logo, fondo = valor, None, None
+        logo = archivo_a_data_uri(
+            logo, base_logos,
+            "no se encuentra el logo '{ruta_imagen}' (se esperaba en {ruta}); se mostrará solo el nombre")
+        normalizados.append({"nombre": nombre, "logo": logo, "fondo": fondo})
+    datos["clientes_logos"] = normalizados
+
+
+def normalizar_premios(datos):
+    """Igual que los logos de clientes: `imagen` es relativa a conocimiento/marca/."""
+    base_logos = RAIZ / "conocimiento" / "marca"
+    for pr in datos.get("premios", []) or []:
+        pr["imagen"] = archivo_a_data_uri(
+            pr.get("imagen"), base_logos,
+            "no se encuentra la imagen del premio '{ruta_imagen}' (se esperaba en {ruta})")
 
 
 def revisar(datos, texto_plano):
@@ -128,6 +160,8 @@ def main(ruta_yaml):
     for b in datos["demo"]["bloques"]:
         b["puntos"] = [p.replace("{canales}", canales) for p in b["puntos"]]
     normalizar_personajes(datos, ruta_yaml.parent)
+    normalizar_logos_clientes(datos)
+    normalizar_premios(datos)
 
     pol = yaml.safe_load(PRECIOS.read_text(encoding="utf-8"))
     datos["precios"] = calcular_precios(datos["cliente"]["empleados"], pol, datos.get("precios", {}))

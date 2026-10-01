@@ -44,11 +44,23 @@ seguridad:
     - { nombre: "MongoDB (basado en AWS)", url: "https://www.mongodb.com/trust" }
     - { nombre: "GitHub", url: "https://github.com/security" }
 
-clientes_logos: [Danone, Qaracter, Taxdown, PropHero, Inversimply, Namencis Education]
+# Rutas relativas a conocimiento/marca/. Sin `logo`, se muestra solo el nombre en una pastilla.
+clientes_logos:
+  - {nombre: Danone, logo: logos-clientes/danone.jpg}
+  - {nombre: Qaracter, logo: logos-clientes/qaracter.jpg}
+  - {nombre: Taxdown, logo: logos-clientes/taxdown.png}
+  - {nombre: PropHero, logo: logos-clientes/prophero.jpg}
+  - {nombre: Inversimply, logo: logos-clientes/inversimply.jpg}
+  - {nombre: Namencis Education, logo: logos-clientes/namencis.png, fondo: oscuro}  # logo en blanco, necesita fondo oscuro
 
 integraciones:
   titular: "Conecta todos tus datos y aplicaciones en un mismo lugar"
   texto: "Ahorra tiempo y esfuerzo conectando Kincode con otras aplicaciones. Seguimos añadiendo más, y si no encuentras tu aplicación, podemos integrarla vía API."
+
+premios:
+  - nombre: "HR Innovation Summit 2025"
+    detalle: "Ganadoras en la categoría Tendencia y Futuro · 4ª edición de la HR Startup Competition (RRHHDigital y AEDRH), 8 de octubre de 2025"
+    imagen: premios/hr-innovation-summit-2025.jpg
 
 confidencial: >-
   Este documento contiene propiedad intelectual confidencial, conocimientos técnicos y otra

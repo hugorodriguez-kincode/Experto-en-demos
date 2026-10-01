@@ -25,6 +25,13 @@ description: Genera la propuesta web interactiva de Kincode (resumen de la demo 
      Pon `mostrar_piloto: false` si no se ofrece piloto.
    - `proximos_pasos`: incluye el HRIS concreto del cliente.
    - Quita `portada.imagen` y `cliente.logo` si no hay imágenes de ese cliente.
+   - `clientes_logos` y `premios` (logos de clientes que confían en Kincode y
+     reconocimientos como el HR Innovation Summit 2025) viven en `base.yaml`,
+     no en el yaml del cliente: son los mismos en todas las propuestas. Las
+     imágenes van en `conocimiento/marca/logos-clientes/` y
+     `conocimiento/marca/premios/` (rutas relativas a `conocimiento/marca/`).
+     Si un logo es blanco/claro, añádele `fondo: oscuro` para que se vea.
+     Solo tócalos si el usuario pide añadir un cliente o premio nuevo.
 3. **Nunca** escribas precios a mano: los calcula el generador.
 4. Ejecuta `python3 herramientas/propuesta/generar.py demos/<carpeta>/propuesta.yaml`,
    corrige todos los avisos ⚠ que salgan y vuelve a generarla.
