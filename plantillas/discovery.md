@@ -12,9 +12,14 @@
 - **Origen del lead:** (BDR: ___ / inbound / referido)
 
 ## Personas (nombres escritos EXACTAMENTE bien)
-| Nombre | Cargo | Rol en la decisión (decisor / influencer / usuario / champion) | Personaje en la demo |
-|---|---|---|---|
-| | | | Empleado / Manager / People / CEO |
+| Nombre | Cargo | Rol en la decisión (decisor / influencer / usuario / champion) | Personaje en la demo | Foto |
+|---|---|---|---|---|
+| | | | Empleado / Manager / People / CEO | |
+
+> Foto: si la persona tiene foto pública (LinkedIn, web del cliente) o nos la
+> pasan directamente, guárdala en `demos/<carpeta>/fotos/<nombre>.jpg` y
+> apúntala aquí; si no, el personaje se queda con un avatar de iniciales.
+> Úsalas solo con foto profesional ya pública o con su permiso explícito.
 
 ## Situación actual
 - **Qué hacen hoy para medir clima / feedback:** (¿desde cuándo no miden?)

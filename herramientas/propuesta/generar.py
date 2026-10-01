@@ -4,6 +4,8 @@
 Uso:  python3 herramientas/propuesta/generar.py demos/<carpeta>/propuesta.yaml
 Salida: propuesta.html junto al yaml.
 """
+import base64
+import mimetypes
 import re
 import sys
 from datetime import date
@@ -69,6 +71,36 @@ def calcular_precios(n, pol, extra):
     }
 
 
+def foto_a_data_uri(foto, carpeta_yaml):
+    """Si `foto` es un archivo local, lo incrusta como data: URI (para que el
+    HTML siga siendo un único archivo portable). Si ya es una URL http(s) o
+    un data:, se deja tal cual."""
+    if not foto or foto.startswith(("http://", "https://", "data:")):
+        return foto
+    ruta = (carpeta_yaml / foto).resolve()
+    if not ruta.is_file():
+        print(f"  ⚠ no se encuentra la foto '{foto}' (se esperaba en {ruta}); se usarán iniciales")
+        return None
+    mime = mimetypes.guess_type(ruta.name)[0] or "image/jpeg"
+    b64 = base64.b64encode(ruta.read_bytes()).decode()
+    return f"data:{mime};base64,{b64}"
+
+
+def normalizar_personajes(datos, carpeta_yaml):
+    """Acepta tanto `nombre: Miguel` (solo texto) como
+    `nombre: {nombre: Miguel, foto: fotos/miguel.jpg}` (con foto real,
+    archivo local o URL). Deja siempre dicts con `nombre` y `foto` (o None)."""
+    personajes = datos.get("demo", {}).get("personajes", {}) or {}
+    normalizados = {}
+    for clave, valor in personajes.items():
+        if isinstance(valor, dict):
+            nombre, foto = valor.get("nombre"), valor.get("foto")
+        else:
+            nombre, foto = valor, None
+        normalizados[clave] = {"nombre": nombre, "foto": foto_a_data_uri(foto, carpeta_yaml)}
+    datos["demo"]["personajes"] = normalizados
+
+
 def revisar(datos, texto_plano):
     """Avisos de calidad: lo que en Qwilr se escapaba a mano."""
     avisos = []
@@ -80,7 +112,8 @@ def revisar(datos, texto_plano):
         avisos.append(f"Queda un pendiente: {p}")
     if re.search(r"\{\{|\}\}|\{canales\}", texto_plano):
         avisos.append("Queda algún placeholder sin rellenar.")
-    faltan = [b["clave"] for b in datos["demo"]["bloques"] if not datos["demo"].get("personajes", {}).get(b["clave"])]
+    faltan = [b["clave"] for b in datos["demo"]["bloques"]
+              if not datos["demo"].get("personajes", {}).get(b["clave"], {}).get("nombre")]
     if faltan:
         avisos.append(f"Faltan nombres de personajes de la demo: {faltan}")
     return avisos
@@ -94,6 +127,7 @@ def main(ruta_yaml):
     canales = datos["demo"].get("canales", "")
     for b in datos["demo"]["bloques"]:
         b["puntos"] = [p.replace("{canales}", canales) for p in b["puntos"]]
+    normalizar_personajes(datos, ruta_yaml.parent)
 
     pol = yaml.safe_load(PRECIOS.read_text(encoding="utf-8"))
     datos["precios"] = calcular_precios(datos["cliente"]["empleados"], pol, datos.get("precios", {}))

@@ -15,6 +15,11 @@ description: Genera la propuesta web interactiva de Kincode (resumen de la demo 
      o la frase literal del cliente, insight), `solucion.pilares` (adapta los puntos a su
      stack: Teams/Slack/WhatsApp, SharePoint, HRIS) y `solucion.cita`.
    - `demo.personajes`: nombres reales de los personajes que se usaron en la demo.
+     Si la discovery trae foto de alguno (columna "Foto"), usa la forma larga
+     `empleado: {nombre: Miguel, foto: fotos/miguel.jpg}` en vez de solo el nombre:
+     guarda el archivo en `demos/<carpeta>/fotos/` (el generador lo incrusta solo)
+     o pon directamente una URL https. Sin foto, el personaje se queda con un
+     avatar de iniciales; no inventes ni descargues fotos de otras personas.
    - `precios`: `piloto_personas`, `ruta_sugerida` y, si hay condiciones especiales,
      `politica:` para sobrescribir lo que haga falta de `precios.yaml` (p. ej. `descuento_especial`).
      Pon `mostrar_piloto: false` si no se ofrece piloto.

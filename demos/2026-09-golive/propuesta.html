@@ -122,11 +122,15 @@ p.small{font-size:15px;color:var(--muted)}
 .cast-card small{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.06em;opacity:.7;margin-bottom:4px}
 .cast-card b{font-size:18px;font-family:"Plus Jakarta Sans"}
 .tab-radio:checked+.cast-card{background:#fff;color:var(--navy)}
+.cast-card .thumb{width:52px;height:52px;border-radius:50%;object-fit:cover;margin:0 auto 10px;display:block;
+  border:2px solid rgba(255,255,255,.4)}
+.tab-radio:checked+.cast-card .thumb{border-color:var(--indigo)}
 
 .persona{display:grid;grid-template-columns:1fr 1.5fr;gap:28px;align-items:center;margin-top:22px}
 .persona .who{text-align:center}
 .persona .who .av{width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,.1);display:grid;place-items:center;
-  margin:0 auto 10px;font-family:"Plus Jakarta Sans";font-size:32px;font-weight:800}
+  margin:0 auto 10px;font-family:"Plus Jakarta Sans";font-size:32px;font-weight:800;overflow:hidden}
+.persona .who .av img{width:100%;height:100%;object-fit:cover}
 .video{position:relative;padding-top:62.5%;border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.4)}
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 ul.check{padding-left:22px;margin:14px 0 0}
@@ -284,7 +288,7 @@ label.close-menu:hover{background:rgba(255,255,255,.1)}
       <h1 class="big">Convertir la cultura <em>GoLive</em> en su motor de ejecución</h1>
       <p class="lead">"Feedback continuo, comunicación interna que llega y visibilidad real de la salud de tu empresa"</p>
       <p class="meta-line">Integrado en Teams y SharePoint. Con Bizneo vía API.</p>
-      <p class="meta-line">Preparado para <b>José Lobera</b> · GoLive · 28/09/2026</p>
+      <p class="meta-line">Preparado para <b>José Lobera</b> · GoLive · 01/10/2026</p>
     </div>
 <img src="https://qwilr.imgix.net/66a355392b3a78171bb196d6/images/ecHaTSsTdWOMkl08Ek7H4I1tmQsRfL0jxPLaaA.jpg?auto=format" alt="KAI, el asistente de Kincode">  </div>
   <div class="scroll-hint" aria-hidden="true">Desliza
@@ -387,20 +391,31 @@ label.close-menu:hover{background:rgba(255,255,255,.1)}
 
     <div class="tabgroup" style="margin-top:6px">
       <input type="radio" name="persona" id="tab-empleado" class="tab-radio" checked>
-      <label for="tab-empleado" class="cast-card"><small>Empleado</small><b>Miguel</b></label>
+      <label for="tab-empleado" class="cast-card">
+        <small>Empleado</small><b>Miguel</b>
+      </label>
       <input type="radio" name="persona" id="tab-manager" class="tab-radio" >
-      <label for="tab-manager" class="cast-card"><small>Manager</small><b>Hugo</b></label>
+      <label for="tab-manager" class="cast-card">
+        <small>Manager</small><b>Hugo</b>
+      </label>
       <input type="radio" name="persona" id="tab-people" class="tab-radio" >
-      <label for="tab-people" class="cast-card"><small>Chief People Officer</small><b>José Lobera</b></label>
+      <label for="tab-people" class="cast-card">
+        <small>Chief People Officer</small><b>José Lobera</b>
+      </label>
       <input type="radio" name="persona" id="tab-ceo" class="tab-radio" >
-      <label for="tab-ceo" class="cast-card"><small>CEO</small><b>Javier Olcina</b></label>
+      <label for="tab-ceo" class="cast-card">
+        <small>CEO</small><b>Javier Olcina</b>
+      </label>
 
       <div class="tab-panel" id="panel-empleado">
         <p class="small" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin:0 0 6px">Cómo capturamos el dato</p>
         <h3 class="h3" style="font-size:24px">Foto de la cultura en tiempo real</h3>
         <ul class="check"><li>Integración transparente con WhatsApp y Teams</li><li>Sin fricción: respuestas en 1 clic</li><li>Relevancia de los datos: 70-90 % de tasa de respuesta</li></ul>
         <div class="persona">
-          <div class="who"><div class="av">M</div><span class="small" style="opacity:1">Empleado</span><br><small>Miguel</small></div>
+          <div class="who">
+            <div class="av">M</div>
+            <span class="small" style="opacity:1">Empleado</span><br><small>Miguel</small>
+          </div>
 <div><div class="video"><iframe src="https://www.loom.com/embed/ca3dac93b0cf48c3a4f57d752d2364cb" title="Demo: Foto de la cultura en tiempo real" loading="lazy" allowfullscreen></iframe></div>
           <p style="font-size:14px;margin-top:8px"><a href="https://www.loom.com/share/ca3dac93b0cf48c3a4f57d752d2364cb" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
       </div>
@@ -409,7 +424,10 @@ label.close-menu:hover{background:rgba(255,255,255,.1)}
         <h3 class="h3" style="font-size:24px">Equipar a los managers para el cambio</h3>
         <ul class="check"><li>Entender el sentimiento del equipo</li><li>Guiar a los miembros del equipo</li><li>Mejorar las habilidades de los managers</li></ul>
         <div class="persona">
-          <div class="who"><div class="av">H</div><span class="small" style="opacity:1">Manager</span><br><small>Hugo</small></div>
+          <div class="who">
+            <div class="av">H</div>
+            <span class="small" style="opacity:1">Manager</span><br><small>Hugo</small>
+          </div>
 <div><div class="video"><iframe src="https://www.loom.com/embed/871bdfd62fd048f0a953173e510f1790" title="Demo: Equipar a los managers para el cambio" loading="lazy" allowfullscreen></iframe></div>
           <p style="font-size:14px;margin-top:8px"><a href="https://www.loom.com/share/871bdfd62fd048f0a953173e510f1790" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
       </div>
@@ -418,7 +436,10 @@ label.close-menu:hover{background:rgba(255,255,255,.1)}
         <h3 class="h3" style="font-size:24px">Alinear a los equipos en el cambio</h3>
         <ul class="check"><li>KAI: un empleado de IA pendiente del equipo 24/7</li><li>Planes de acción propuestos de forma recurrente</li></ul>
         <div class="persona">
-          <div class="who"><div class="av">J</div><span class="small" style="opacity:1">Chief People Officer</span><br><small>José Lobera</small></div>
+          <div class="who">
+            <div class="av">J</div>
+            <span class="small" style="opacity:1">Chief People Officer</span><br><small>José Lobera</small>
+          </div>
 <div><div class="video"><iframe src="https://www.loom.com/embed/b16ab8d65d554f58bf2ae93dca09e33a" title="Demo: Alinear a los equipos en el cambio" loading="lazy" allowfullscreen></iframe></div>
           <p style="font-size:14px;margin-top:8px"><a href="https://www.loom.com/share/b16ab8d65d554f58bf2ae93dca09e33a" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
       </div>
@@ -427,7 +448,10 @@ label.close-menu:hover{background:rgba(255,255,255,.1)}
         <h3 class="h3" style="font-size:24px">Mejora de los resultados de negocio</h3>
         <ul class="check"><li>Cultura organizativa alineada</li><li>Mejora de la satisfacción y el compromiso</li></ul>
         <div class="persona">
-          <div class="who"><div class="av">J</div><span class="small" style="opacity:1">CEO</span><br><small>Javier Olcina</small></div>
+          <div class="who">
+            <div class="av">J</div>
+            <span class="small" style="opacity:1">CEO</span><br><small>Javier Olcina</small>
+          </div>
 <div><div class="video"><iframe src="https://www.loom.com/embed/75cfbd417c274c2f8b42e19246a60692" title="Demo: Mejora de los resultados de negocio" loading="lazy" allowfullscreen></iframe></div>
           <p style="font-size:14px;margin-top:8px"><a href="https://www.loom.com/share/75cfbd417c274c2f8b42e19246a60692" target="_blank" rel="noopener">▶ Ver el vídeo en Loom</a></p></div>        </div>
       </div>

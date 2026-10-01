@@ -45,6 +45,9 @@ solucion:
   cita: "Escuchamos a tus 132 personas en GoLive directamente en Teams. José tiene visibilidad real de la salud de la empresa sin añadir carga manual."
 
 demo:
+  # Solo el nombre -> avatar con la inicial. Para foto real, usa la forma larga:
+  #   empleado: {nombre: Miguel, foto: fotos/miguel.jpg}   # archivo en esta carpeta, o una URL https://...
+  # [PENDIENTE: añadir fotos reales de los 4 personajes si GoLive las comparte]
   personajes:
     empleado: Miguel
     manager: Hugo
