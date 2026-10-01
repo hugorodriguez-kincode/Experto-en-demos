@@ -47,9 +47,9 @@ solucion:
 demo:
   # Solo el nombre -> avatar con la inicial. Para foto real, usa la forma larga:
   #   empleado: {nombre: Miguel, foto: fotos/miguel.jpg}   # archivo en esta carpeta, o una URL https://...
-  # [PENDIENTE: añadir fotos reales de Miguel, José Lobera y Javier Olcina si GoLive las comparte]
+  # [PENDIENTE: añadir fotos reales de José Lobera y Javier Olcina si GoLive las comparte]
   personajes:
-    empleado: Miguel
+    empleado: {nombre: Miguel, foto: fotos/miguel.webp}
     manager: {nombre: Hugo, foto: fotos/hugo.webp}
     people: José Lobera
     ceo: Javier Olcina
