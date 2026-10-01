@@ -69,13 +69,14 @@ Si el usuario quiere un enlace en vez de (o además de) el archivo `propuesta.ht
 1. `python3 herramientas/propuesta/para_artifact.py demos/<carpeta>/propuesta.html`
    — genera `propuesta.artifact.html`. Este paso adapta el HTML a las reglas del
    visor de Artifacts (que no son las de un navegador normal):
-   - Cambia los vídeos de Loom (que iban en `<iframe>`) por una tarjeta que
-     enlaza fuera, porque el visor no permite incrustar sitios de terceros.
    - Convierte el botón "Hablar con ___" y añade un botón "Copiar email" junto
      a cada CTA, porque los enlaces `mailto:` no son fiables dentro del visor.
    - Descarga e incrusta como `data:` cualquier imagen externa (el visor
      bloquea imágenes que no sean propias, de Google Fonts o data:/blob:).
    - Quita `<!doctype>/<html>/<head>/<body>`: el Artifact ya pone los suyos.
+   (Los vídeos de Loom ya son una tarjeta de enlace desde la propia plantilla,
+   no un `<iframe>` — nunca los incrustes, el visor de Artifacts los bloquea y
+   además fallan bastante como iframe en un navegador normal.)
 2. Publica con la herramienta Artifact: `file_path` apuntando a ese
    `.artifact.html`, un `title` corto (2-4 palabras, sin explicación tras un
    guion — el propio `<title>` del HTML manda si no coincide, actualízalo ahí),
@@ -85,6 +86,6 @@ Si el usuario quiere un enlace en vez de (o además de) el archivo `propuesta.ht
    `src="http..."` sin incrustar (el aviso de la propia herramienta Artifact
    lo dice si se cuela alguna).
 
-El archivo `propuesta.html` (el original, con iframes y mailtos) sigue siendo
-el que se envía por email o se sube a Drive/HubSpot; el `.artifact.html` es
-solo para cuando el destino es un enlace de Artifact.
+El archivo `propuesta.html` (el original, con mailtos) sigue siendo el que se
+envía por email o se sube a Drive/HubSpot; el `.artifact.html` es solo para
+cuando el destino es un enlace de Artifact.
