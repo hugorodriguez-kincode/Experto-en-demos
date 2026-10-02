@@ -15,7 +15,7 @@ portada:
   titular: "Convertir la cultura <em>GoLive</em> en su motor de ejecución"
   subtitulo: "Feedback continuo, comunicación interna que llega y visibilidad real de la salud de tu empresa"
   linea_integraciones: "Integrado en Teams y SharePoint. Con Bizneo vía API."
-  imagen: https://qwilr.imgix.net/66a355392b3a78171bb196d6/images/ecHaTSsTdWOMkl08Ek7H4I1tmQsRfL0jxPLaaA.jpg?auto=format
+  # imagen: hereda la mascota por defecto de base.yaml (conocimiento/marca/mascota-kai.png)
 
 objetivo:
   titular: "Visibilidad real de tus 132 personas, directamente en Teams"

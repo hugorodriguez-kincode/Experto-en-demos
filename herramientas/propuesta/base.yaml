@@ -45,6 +45,12 @@ seguridad:
     - { nombre: "GitHub", url: "https://github.com/security" }
 
 # Rutas relativas a conocimiento/marca/. Sin `logo`, se muestra solo el nombre en una pastilla.
+portada:
+  # Mascota de Kincode, recortada sin fondo. El yaml del cliente solo pone
+  # titular/subtitulo/linea_integraciones; si un cliente pidiera otra imagen,
+  # basta con sobrescribir `imagen` ahí.
+  imagen: mascota-kai.png
+
 clientes_logos:
   - {nombre: Danone, logo: logos-clientes/danone.jpg}
   - {nombre: Qaracter, logo: logos-clientes/qaracter.jpg}

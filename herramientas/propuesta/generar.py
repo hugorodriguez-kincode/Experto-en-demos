@@ -124,6 +124,18 @@ def normalizar_logos_clientes(datos):
     datos["clientes_logos"] = normalizados
 
 
+def normalizar_portada(datos):
+    """`portada.imagen` es relativa a conocimiento/marca/ (igual que logos y
+    premios): es la mascota de Kincode, compartida por defecto entre todas
+    las propuestas salvo que el cliente pida otra imagen."""
+    base_logos = RAIZ / "conocimiento" / "marca"
+    portada = datos.get("portada", {})
+    if portada.get("imagen"):
+        portada["imagen"] = archivo_a_data_uri(
+            portada["imagen"], base_logos,
+            "no se encuentra la imagen de portada '{ruta_imagen}' (se esperaba en {ruta})")
+
+
 def normalizar_premios(datos):
     """Igual que los logos de clientes: `imagen` es relativa a conocimiento/marca/."""
     base_logos = RAIZ / "conocimiento" / "marca"
@@ -160,6 +172,7 @@ def main(ruta_yaml):
     for b in datos["demo"]["bloques"]:
         b["puntos"] = [p.replace("{canales}", canales) for p in b["puntos"]]
     normalizar_personajes(datos, ruta_yaml.parent)
+    normalizar_portada(datos)
     normalizar_logos_clientes(datos)
     normalizar_premios(datos)
 
