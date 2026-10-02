@@ -131,12 +131,16 @@ ul.check{padding-left:22px;margin:14px 0 0}
 ul.check li+li{margin-top:6px}
 
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
-.stat{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:18px}
+.stat{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:18px;transition:transform .2s}
 .theme-light .stat,.theme-tint .stat{background:var(--soft);border-color:var(--line)}
+.stat:hover{transform:translateY(-3px)}
+.stat .icon{font-size:22px;display:block;margin-bottom:8px}
 .stat b{display:block;font-family:"Plus Jakarta Sans";font-size:clamp(20px,2.2vw,27px)}
 .stat span{font-size:13.5px;opacity:.8}
 .stat.hi{background:rgba(255,255,255,.16)}
 .theme-light .stat.hi,.theme-tint .stat.hi{background:#EEF2FF;border-color:var(--indigo)}
+.stat.hi b{color:var(--indigo)}
+.theme-indigo .stat.hi b,.theme-navy .stat.hi b,.theme-dark .stat.hi b{color:#fff}
 .card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
 .card-grid>div{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:18px;transition:transform .2s}
 .theme-light .card-grid>div,.theme-tint .card-grid>div{background:var(--soft);border-color:var(--line)}
@@ -502,26 +506,26 @@ label.close-menu:hover{background:rgba(255,255,255,.1)}
 
   <div class="tab-panel" id="cond-panel-base">
     <div class="stats">
-      <div class="stat"><b data-fmt="eur2" data-value="3.6">3,60 €</b><span>€/emp/mes</span></div>
-      <div class="stat"><b data-fmt="eur2" data-value="475.2">475,20 €</b><span>Total mensual</span></div>
-      <div class="stat"><b data-fmt="eur0" data-value="6702">6.702 €</b><span>Total año 1</span></div>
-      <div class="stat hi"><b data-fmt="pct" data-value="25">-25 %</b><span>Ahorro vs. tarifa normal</span></div>
+      <div class="stat"><span class="icon">💳</span><b data-fmt="eur2" data-value="3.6">3,60 €</b><span>€/emp/mes</span></div>
+      <div class="stat"><span class="icon">📆</span><b data-fmt="eur2" data-value="475.2">475,20 €</b><span>Total mensual</span></div>
+      <div class="stat"><span class="icon">📊</span><b data-fmt="eur0" data-value="6702">6.702 €</b><span>Total año 1</span></div>
+      <div class="stat hi"><span class="icon">🎁</span><b data-fmt="pct" data-value="25">-25 %</b><span>Ahorro vs. tarifa normal</span></div>
     </div>
   </div>
   <div class="tab-panel" id="cond-panel-extra1">
     <div class="stats">
-      <div class="stat"><b data-fmt="eur2" data-value="3.24">3,24 €</b><span>€/emp/mes</span></div>
-      <div class="stat"><b data-fmt="eur2" data-value="427.68">427,68 €</b><span>Total mensual</span></div>
-      <div class="stat"><b data-fmt="eur0" data-value="6132">6.132 €</b><span>Total año 1</span></div>
-      <div class="stat hi"><b data-fmt="pct" data-value="31">-31 %</b><span>Ahorro vs. tarifa normal</span></div>
+      <div class="stat"><span class="icon">💳</span><b data-fmt="eur2" data-value="3.24">3,24 €</b><span>€/emp/mes</span></div>
+      <div class="stat"><span class="icon">📆</span><b data-fmt="eur2" data-value="427.68">427,68 €</b><span>Total mensual</span></div>
+      <div class="stat"><span class="icon">📊</span><b data-fmt="eur0" data-value="6132">6.132 €</b><span>Total año 1</span></div>
+      <div class="stat hi"><span class="icon">🎁</span><b data-fmt="pct" data-value="31">-31 %</b><span>Ahorro vs. tarifa normal</span></div>
     </div>
   </div>
   <div class="tab-panel" id="cond-panel-extra2">
     <div class="stats">
-      <div class="stat"><b data-fmt="eur2" data-value="2.88">2,88 €</b><span>€/emp/mes</span></div>
-      <div class="stat"><b data-fmt="eur2" data-value="380.16">380,16 €</b><span>Total mensual</span></div>
-      <div class="stat"><b data-fmt="eur0" data-value="5562">5.562 €</b><span>Total año 1</span></div>
-      <div class="stat hi"><b data-fmt="pct" data-value="38">-38 %</b><span>Ahorro vs. tarifa normal</span></div>
+      <div class="stat"><span class="icon">💳</span><b data-fmt="eur2" data-value="2.88">2,88 €</b><span>€/emp/mes</span></div>
+      <div class="stat"><span class="icon">📆</span><b data-fmt="eur2" data-value="380.16">380,16 €</b><span>Total mensual</span></div>
+      <div class="stat"><span class="icon">📊</span><b data-fmt="eur0" data-value="5562">5.562 €</b><span>Total año 1</span></div>
+      <div class="stat hi"><span class="icon">🎁</span><b data-fmt="pct" data-value="38">-38 %</b><span>Ahorro vs. tarifa normal</span></div>
     </div>
   </div>
 </div>
